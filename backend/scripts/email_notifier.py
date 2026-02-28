@@ -8,7 +8,7 @@ from typing import List, Optional
 
 class EmailNotifier:
     """
-    Email notification service for StonkzzReport
+    Email notification service for Fincup
     Sends automated emails when data fetching completes
     """
     
@@ -59,7 +59,7 @@ class EmailNotifier:
         
         # Default subject and body
         if subject is None:
-            subject = "StonkzzReport - Data Fetch Complete"
+            subject = "Fincup - Data Fetch Complete"
             
         if body is None:
             body = self._generate_default_body(has_attachment=pdf_path is not None)
@@ -116,7 +116,7 @@ class EmailNotifier:
         
         body = f"""Good day,
 
-This is an automated notification from StonkzzReport.
+This is an automated notification from Fincup.
 
 The scheduled data fetch has completed successfully.{attachment_note}
 Fetch Details:
@@ -128,7 +128,7 @@ The latest market data is now available in your report dashboard.
 
 ---
 Regards,
-StonkzzReport Automation Engine
+Fincup Automation Engine
 """
         return body
 
@@ -176,8 +176,8 @@ if __name__ == "__main__":
     
     # Send test email
     success = send_email(
-        subject="StonkzzReport - Test Email",
-        body="This is a test email from the StonkzzReport email notification system."
+        subject="Fincup - Test Email",
+        body="This is a test email from the Fincup email notification system."
     )
     
     if success:

@@ -24,10 +24,10 @@ cd ..
 # 2. Start PDF Generation & Email (This will also handle the frontend server)
 echo "Starting PDF Generation and Email Service..."
 if [ -f "backend/venv/bin/python3" ]; then
-    backend/venv/bin/python3 generate_pdf_report.py
+    backend/venv/bin/python3 generate_pdf_report.py --keep-server
 else
     echo "Virtual environment not found. Trying global python3..."
-    python3 generate_pdf_report.py
+    python3 generate_pdf_report.py --keep-server
 fi
 
 # Check exit status

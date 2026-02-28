@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Automated PDF Report Generator using Playwright
-Automates browser interaction to generate PDF from the StonkzzReport website
+Automates browser interaction to generate PDF from the Fincup website
 """
 
 import os
@@ -22,7 +22,7 @@ load_dotenv(backend_env_path)
 sys.path.append(os.path.join(os.path.dirname(__file__), 'backend'))
 
 class PDFReportGenerator:
-    """Automates PDF generation from the StonkzzReport website"""
+    """Automates PDF generation from the Fincup website"""
     
     def __init__(self, url="http://localhost:5173", download_dir=None):
         self.url = url
@@ -271,7 +271,7 @@ class PDFReportGenerator:
                          
                          # Save the downloaded file
                          timestamp = time.strftime("%Y%m%d_%H%M%S")
-                         pdf_filename = f"stonkzz-report_{timestamp}.pdf"
+                         pdf_filename = f"fincup-report_{timestamp}.pdf"
                          self.pdf_path = os.path.join(self.download_dir, pdf_filename)
                          
                          download.save_as(self.pdf_path)
@@ -358,7 +358,7 @@ def main():
     args = parser.parse_args()
     
     print("\n" + "="*60)
-    print("StonkzzReport - Automated PDF Generator")
+    print("Fincup - Automated PDF Generator")
     print("="*60 + "\n")
     
     # Create generator
@@ -397,7 +397,7 @@ def main():
             print("📧 Sending email with PDF attachment...")
             
             success = send_email_with_attachment(
-                subject="StonkzzReport - Daily Market Report 📊",
+                subject="Fincup - Daily Market Report 📊",
                 body=None,  # Use default body
                 pdf_path=pdf_path
             )
@@ -409,21 +409,6 @@ def main():
                 
         except Exception as e:
             print(f"⚠️  Error sending email: {e}")
-            print(f"Details: {e}")
-            print("   PDF was generated successfully but email failed")
-            # Try absolute import as fallback
-            try:
-                sys.path.append(os.path.join(os.path.dirname(__file__), 'backend'))
-                from scripts.email_notifier import send_email_with_attachment
-                print("   Retrying email with adjusted path...")
-                success = send_email_with_attachment(
-                    subject="StonkzzReport - Daily Market Report 📊",
-                    body=None,  # Use default body
-                    pdf_path=pdf_path
-                )
-                if success: print("✅ Retry success!")
-            except Exception as e2:
-                print(f"   Retry failed: {e2}")
         
         return 0
     else:

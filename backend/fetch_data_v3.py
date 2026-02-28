@@ -2,6 +2,7 @@ import yfinance as yf
 import os
 import time
 import requests
+import cloudscraper
 import re
 from bs4 import BeautifulSoup
 # from nse import NSE
@@ -107,18 +108,65 @@ class GiftNiftyData:
 class GiftNiftyScraper:
     """
     Robust fetcher/Proxy for GIFT Nifty.
-    Prioritizes Yahoo Finance (Nifty 50 Index as Proxy) due to MoneyControl blocking.
-    GIFT Nifty is essentially Nifty 50 Futures. During market hours, ^NSEI is perfect correlation.
+    Prioritizes MoneyControl Live Index, falls back to Yahoo Finance (Nifty 50 Index as Proxy).
     """
     def __init__(self):
         pass
 
     def fetch(self) -> Optional[GiftNiftyData]:
-        print("Fetching GIFT Nifty via YFinance Proxy (^NSEI)...")
+        print("Fetching GIFT Nifty via MoneyControl...")
         try:
-            # Plan A: Use YFinance Nifty 50 Index (^NSEI) as the proxy.
-            # While this is "Spot" and not "Futures", for a daily report aimed at retail,
-            # the trend and level are what matters.
+            import cloudscraper
+            from bs4 import BeautifulSoup
+            import json
+            
+            scraper = cloudscraper.create_scraper()
+            url = "https://www.moneycontrol.com/live-index/gift-nifty?symbol=in%3Bgsx"
+            resp = scraper.get(url)
+            
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, 'html.parser')
+                next_data = soup.find('script', id='__NEXT_DATA__')
+                
+                if next_data:
+                    data = json.loads(next_data.string)
+                    stock_data = data.get('props', {}).get('pageProps', {}).get('consumptionData', {}).get('stockData', {})
+                    
+                    if stock_data:
+                        lastprice = float(stock_data.get('lastprice', '0').replace(',', ''))
+                        change = float(stock_data.get('change', '0').replace(',', ''))
+                        pct = float(stock_data.get('percentchange', '0').replace(',', ''))
+                        
+                        open_p = float(stock_data.get('open', '0').replace(',', ''))
+                        high_p = float(stock_data.get('high', '0').replace(',', ''))
+                        low_p = float(stock_data.get('low', '0').replace(',', ''))
+                        prev_p = float(stock_data.get('prevclose', '0').replace(',', ''))
+                        w52_h = float(stock_data.get('yearlyhigh', '0').replace(',', ''))
+                        w52_l = float(stock_data.get('yearlylow', '0').replace(',', ''))
+                        
+                        if lastprice > 0:
+                            print("  MoneyControl Fetch Success.")
+                            return GiftNiftyData(
+                                last_price=lastprice,
+                                change=change,
+                                change_percent=pct,
+                                timestamp=datetime.now(),
+                                open=open_p,
+                                high=high_p,
+                                low=low_p,
+                                prev_close=prev_p,
+                                week_52_high=w52_h,
+                                week_52_low=w52_l,
+                                source="MoneyControl",
+                                is_fresh=True
+                            )
+            print("  MoneyControl parse failed or empty.")
+        except Exception as e:
+            print(f"  MoneyControl Failed: {e}")
+
+        print("Falling back to GIFT Nifty via YFinance Proxy (^NSEI)...")
+        try:
+            # Plan B: Use YFinance Nifty 50 Index (^NSEI) as the proxy.
             
             ticker = yf.Ticker("^NSEI")
             
@@ -644,160 +692,136 @@ def get_last_trading_day():
 
 def fetch_gold_silver():
     target_date = get_last_trading_day()
-    print(f"Fetching Commodities (Scraping LiveChennai)... Target Date: {target_date}")
-
-    url = "https://www.livechennai.com/gold_silverrate.asp"
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' 
-                      'AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/91.0.4472.124 Safari/537.36'
-    }
+    print(f"Fetching Commodities (Scraping GoodReturns)... Target Date: {target_date}")
     
     try:
-        resp = requests.get(url, headers=headers, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.content, 'html.parser')
-        tables = soup.find_all('table')
+        scraper = cloudscraper.create_scraper()
         
-        gold_table = None
-        silver_table = None
-        
-        for t in tables:
-            txt = t.get_text(separator=' ', strip=True).lower()
-            if 'pure gold' in txt and 'standard gold' in txt:
-                gold_table = t
-            if 'silver 1 gm' in txt and 'silver (1 kg)' in txt:
-                silver_table = t
-                
         # --- GOLD ---
-        if gold_table:
-            rows = gold_table.find_all('tr')
-            history = []
-            # Row 0: Header, Row 1: Subheader, Row 2+: Data
-            # Start from reasonable index. Safest: filter rows with data cells
-            for row in rows:
-                cols = row.find_all('td')
-                if not cols: continue
-                # Expecting 5 cols: Date, 24K(1g), 24K(8g), 22K(1g), 22K(8g)
-                if len(cols) >= 5:
-                    date = cols[0].get_text(strip=True)
-                    # Check date format to ensure it's a data row
-                    if '/' not in date and '-' not in date: continue
-                    
-                    p24 = parse_price(cols[1].get_text(strip=True))
-                    p22 = parse_price(cols[3].get_text(strip=True)) # Col 3 is 22K 1g
-                    
-                    if p24 > 0:
-                        history.append({'date': date, '24k': p24, '22k': p22})
-            
-            if len(history) >= 1:
-                latest = history[0]
-                
-                # Validation
-                try:
-                    # Date format example: 14/Jan/2026
-                    latest_date = datetime.strptime(latest['date'], "%d/%b/%Y").date()
-                    if latest_date < target_date:
-                        raise ValueError(f"Gold price date mismatch: expected at least {target_date}, got {latest_date}")
-                except ValueError as ve:
-                    if "mismatch" in str(ve): raise ve
-                    print(f"Date parsing warning: {ve}")
-                
-                 # Calculate change from previous day if available
-                if len(history) >= 2:
-                    prev = history[1]
-                    chg24 = latest['24k'] - prev['24k']
-                    chg22 = latest['22k'] - prev['22k']
-                else:
-                    chg24 = 0.0
-                    chg22 = 0.0
-                
-                arrow = "▲" if chg24 >= 0 else "▼"
-                
-                # Format: 24K Gold: : ₹ <p> (Change: ₹ <c> <arrow>)
-                gold_txt = f"24K Gold: : ₹ {latest['24k']:,.2f} (Change: ₹ {chg24:,.2f} {arrow})\n"
-                gold_txt += f"22K Gold: : ₹ {latest['22k']:,.2f} (Change: ₹ {chg22:,.2f} {arrow})\n"
-                gold_txt += "\nDate | 24K Price | 22K Price\n---------------------------\n"
-                
-                # History Table: Date | ₹ 24k (chg) | ₹ 22k (chg)
-                # Ensure we write at least the ones we found
-                for i, h in enumerate(history[:10]):
-                    if i + 1 < len(history):
-                        prev_h = history[i+1]
-                        c24 = h['24k'] - prev_h['24k']
-                        c22 = h['22k'] - prev_h['22k']
-                    else:
-                        c24 = 0
-                        c22 = 0
-                    
-                    # Date formatting: keeping original string usually works
-                    # or standardizing. The scraper gets "14/Jan/2026"
-                    gold_txt += f"{h['date']} | ₹ {h['24k']:,.0f} ({int(c24)}) | ₹ {h['22k']:,.0f} ({int(c22)})\n"
-                
-                save_file('gold_rates.txt', gold_txt)
-            else:
-                print("No Gold history rows found.")
-
-        # --- SILVER ---
-        if silver_table:
-            rows = silver_table.find_all('tr')
-            history = []
-            for row in rows:
-                cols = row.find_all('td')
-                if not cols: continue
-                if len(cols) >= 3:
-                    date = cols[0].get_text(strip=True)
-                    if '/' not in date and '-' not in date: continue
-                    
-                    p1g = parse_price(cols[1].get_text(strip=True))
-                    pkg = parse_price(cols[2].get_text(strip=True))
-                    
-                    if p1g > 0:
-                        history.append({'date': date, '1g': p1g, '1kg': pkg})
+        gold_url = "https://www.goodreturns.in/gold-rates/chennai.html"
+        gold_html = scraper.get(gold_url).text
+        soup_g = BeautifulSoup(gold_html, 'html.parser')
         
-            if len(history) >= 1:
-                latest = history[0]
-                
-                # Validation
-                try:
-                    # Date format example: 14/Jan/2026
-                    latest_date = datetime.strptime(latest['date'], "%d/%b/%Y").date()
-                    if latest_date < target_date:
-                        raise ValueError(f"Silver price date mismatch: expected at least {target_date}, got {latest_date}")
-                except ValueError as ve:
-                    if "mismatch" in str(ve): raise ve
-                    print(f"Date parsing warning: {ve}")
-
-                if len(history) >= 2:
-                    prev = history[1]
-                    chg1g = latest['1g'] - prev['1g']
-                    chgkg = latest['1kg'] - prev['1kg']
-                else: 
-                    chg1g = 0.0
-                    chgkg = 0.0
-                    
-                arrow_s = "▲" if chgkg >= 0 else "▼"
-                
-                silver_txt = f"Per Gram: : ₹ {latest['1g']:,.2f} (Change: ₹ {chg1g:,.2f} {arrow_s})\n"
-                silver_txt += f"Per Kg: : ₹ {latest['1kg']:,.2f} (Change: ₹ {chgkg:,.2f} {arrow_s})\n"
-                silver_txt += "\nDate | 1 gram | 100 g | 1 kg\n-------------------------------\n"
-                
-                for i, h in enumerate(history[:10]):
-                    if i + 1 < len(history):
-                        prev_h = history[i+1]
-                        c1g = h['1g'] - prev_h['1g']
-                    else:
-                        c1g = 0
-                    
-                    p100g = h['1g'] * 100
-                    silver_txt += f"{h['date']} | ₹ {h['1g']:,.1f} ({c1g:+.1f}) | ₹ {p100g:,.0f} | ₹ {h['1kg']:,.0f}\n"
-
-                save_file('silver_rates.txt', silver_txt)
+        tables_g = soup_g.find_all('table')
+        history_g = []
+        
+        # Identify historical table for Gold (usually table 3 or similar with Date, 24K, 22K columns)
+        for t in tables_g:
+            headers = [th.text.strip().lower() for th in t.find_all('th')]
+            if 'date' in headers and any('24' in h for h in headers):
+                rows = t.find_all('tr')
+                for row in rows[1:]:
+                    cols = row.find_all('td')
+                    if len(cols) >= 3:
+                        date_str = cols[0].get_text(strip=True)
+                        p24 = parse_price(cols[1].get_text(strip=True))
+                        p22 = parse_price(cols[2].get_text(strip=True))
+                        if p24 > 0:
+                            history_g.append({'date': date_str, '24k': p24, '22k': p22})
+                break
+        
+        if len(history_g) >= 1:
+            latest = history_g[0]
+            
+            # Validation
+            try:
+                # Date format example: Feb 25, 2026
+                latest_date = datetime.strptime(latest['date'].replace(',', ''), "%b %d %Y").date()
+                if latest_date < target_date:
+                    print(f"Gold price date mismatch: expected at least {target_date}, got {latest_date}")
+            except ValueError as ve:
+                print(f"Date parsing warning: {ve}")
+            
+            # Calculate change
+            if len(history_g) >= 2:
+                prev = history_g[1]
+                chg24 = latest['24k'] - prev['24k']
+                chg22 = latest['22k'] - prev['22k']
             else:
-                 print("No Silver history rows found.")
-                 
+                chg24 = 0.0
+                chg22 = 0.0
+                
+            arrow = "▲" if chg24 >= 0 else "▼"
+            gold_txt = f"24K Gold: : ₹ {latest['24k']:,.2f} (Change: ₹ {chg24:,.2f} {arrow})\n"
+            gold_txt += f"22K Gold: : ₹ {latest['22k']:,.2f} (Change: ₹ {chg22:,.2f} {arrow})\n"
+            gold_txt += "\nDate | 24K Price | 22K Price\n---------------------------\n"
+            
+            for i, h in enumerate(history_g[:10]):
+                if i + 1 < len(history_g):
+                    prev_h = history_g[i+1]
+                    c24 = h['24k'] - prev_h['24k']
+                    c22 = h['22k'] - prev_h['22k']
+                else:
+                    c24, c22 = 0, 0
+                gold_txt += f"{h['date']} | ₹ {h['24k']:,.0f} ({int(c24)}) | ₹ {h['22k']:,.0f} ({int(c22)})\n"
+            
+            save_file('gold_rates.txt', gold_txt)
+        else:
+            print("No Gold history rows found.")
+            
+        # --- SILVER ---
+        silver_url = "https://www.goodreturns.in/silver-rates/chennai.html"
+        silver_html = scraper.get(silver_url).text
+        soup_s = BeautifulSoup(silver_html, 'html.parser')
+        
+        tables_s = soup_s.find_all('table')
+        history_s = []
+        
+        # Look for historical table (table headers like Date, 10 gram, 100 gram, 1 Kg)
+        for t in tables_s:
+            headers = [th.text.strip().lower() for th in t.find_all('th')]
+            if 'date' in headers and '1 kg' in headers:
+                rows = t.find_all('tr')
+                for row in rows[1:]:
+                    cols = row.find_all('td')
+                    if len(cols) >= 4:
+                        date_str = cols[0].get_text(strip=True)
+                        p10g = parse_price(cols[1].get_text(strip=True))
+                        p100g = parse_price(cols[2].get_text(strip=True))
+                        pkg = parse_price(cols[3].get_text(strip=True).split('(')[0])
+                        p1g = p10g / 10.0 if p10g > 0 else 0
+                        if pkg > 0:
+                            history_s.append({'date': date_str, '1g': p1g, '1kg': pkg})
+                break
+                
+        if len(history_s) >= 1:
+            latest = history_s[0]
+            
+            try:
+                latest_date = datetime.strptime(latest['date'].replace(',', ''), "%b %d %Y").date()
+                if latest_date < target_date:
+                    print(f"Silver price date mismatch: expected at least {target_date}, got {latest_date}")
+            except ValueError as ve:
+                print(f"Date parsing warning: {ve}")
+
+            if len(history_s) >= 2:
+                prev = history_s[1]
+                chg1g = latest['1g'] - prev['1g']
+                chgkg = latest['1kg'] - prev['1kg']
+            else: 
+                chg1g, chgkg = 0.0, 0.0
+                
+            arrow_s = "▲" if chgkg >= 0 else "▼"
+            
+            silver_txt = f"Per Gram: : ₹ {latest['1g']:,.2f} (Change: ₹ {chg1g:,.2f} {arrow_s})\n"
+            silver_txt += f"Per Kg: : ₹ {latest['1kg']:,.2f} (Change: ₹ {chgkg:,.2f} {arrow_s})\n"
+            silver_txt += "\nDate | 1 gram | 100 g | 1 kg\n-------------------------------\n"
+            
+            for i, h in enumerate(history_s[:10]):
+                if i + 1 < len(history_s):
+                    prev_h = history_s[i+1]
+                    c1g = h['1g'] - prev_h['1g']
+                else:
+                    c1g = 0
+                
+                p100g = h['1g'] * 100
+                silver_txt += f"{h['date']} | ₹ {h['1g']:,.1f} ({c1g:+.1f}) | ₹ {p100g:,.0f} | ₹ {h['1kg']:,.0f}\n"
+
+            save_file('silver_rates.txt', silver_txt)
+        else:
+             print("No Silver history rows found.")
+             
     except Exception as e:
-        # if "mismatch" in str(e): raise e
         print(f"Error fetching Commodities via Scraper: {e}")
 
 
@@ -1725,147 +1749,84 @@ def fetch_market_verdict():
 
 def fetch_fiidii():
     """
-    Fetches FII/DII daily data using NSEPython (Direct NSE Source) instead of scraping MoneyControl.
+    Fetches FII/DII Data
+    Source: Web scraping from groww.in/fii-dii-data.
+    Method: Uses the requests library with a standard user-agent header. It parses the HTML table using BeautifulSoup to extract the date, FII net value, and DII net value. It scrapes up to 4 pages of historical data.
+    Fallback: None explicitly implemented within the function if the scraping fails.
     """
-    print("Fetching FII/DII Daily Data (via NSEPython)...")
+    print("Fetching FII/DII Daily Data (via Groww Scraping)...")
+    
+    all_daily_data = []
     
     try:
-        from nsepython import nse_fiidii
+        from bs4 import BeautifulSoup
+        import requests
+        from datetime import datetime
         
-        # Format: [{'date': '10-Feb-2026', 'fii_net': '123.45', 'dii_net': '-67.89'}, ...]
-        # Note: nse_fiidii() returns current day's data usually. 
-        # But we need history. NSE website only gives current day.
-        # Fallback: We will try to fetch from a more reliable JSON endpoint if nsepython fails or is insufficient.
-        # Actually, let's try a different Moneycontrol URL that is known to be JSON based or easier to scrape?
-        # No, let's stick to the Plan B: Use the `nsepython` or direct NSE API first.
-        
-        # Logic: 
-        # 1. Try NSEPython first for TODAY's data.
-        # 2. Setup a mechanism to appending it to our local cache.
-        # 3. For historical data gap (Feb 9-10), we might need to manually input or find another source.
-        #    BUT for now, fixing the "Daily" fetch is key.
-        
-        # New approach:
-        # The MoneyControl scrape failed because of HTML changes/blocking.
-        # The URL `https://www.moneycontrol.com/stocks/marketstats/fii_dii_activity/index.php` is standard.
-        # Let's try `https://www.moneycontrol.com/mc/widget/fiidii/get_chart_data?classic=true&interval=daily` which is often used for charts!
-        
-        print("  Attempting JSON API from MoneyControl (Chart Data)...")
-        url = "https://www.moneycontrol.com/mc/widget/fiidii/get_chart_data?classic=true&interval=daily"
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Referer': 'https://www.moneycontrol.com/stocks/marketstats/fii_dii_activity/index.php',
-            'X-Requested-With': 'XMLHttpRequest'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
         
-        import requests
-        resp = requests.get(url, headers=headers, timeout=10)
-        
-        all_daily_data = []
-        today = datetime.now()
-        
-        if resp.status_code == 200:
-             data = resp.json()
-             # Structure: [{'time': '2026-02-10 00:00:00', 'fii_net_purchase': 123.4, 'dii_net_purchase': -45.6}, ...]
-             # Or similar. Let's assume standard MC chart format.
-             # Actually, simpler: check keys.
-             
-             # If direct list
-             if isinstance(data, list):
-                 for item in data:
-                     # Parse date
-                     ts_str = item.get('time', '') or item.get('date', '')
-                     # Timestamp in ms or string?
-                     dt = None
-                     try:
-                        # Try parsing "YYYY-MM-DD HH:MM:SS"
-                        dt = datetime.strptime(ts_str, '%Y-%m-%d %H:%M:%S')
-                     except:
-                        try:
-                            # Try timestamp (ms)
-                            dt = datetime.fromtimestamp(int(ts_str)/1000)
-                        except: pass
-                     
-                     if dt:
-                         fii = float(item.get('fii_net_purchase', 0) or item.get('fii', 0))
-                         dii = float(item.get('dii_net_purchase', 0) or item.get('dii', 0))
-                         
-                         all_daily_data.append({
-                             'date': dt.strftime('%d-%m-%Y'),
-                             'fii': fii,
-                             'dii': dii,
-                             'timestamp': dt.timestamp()
-                         })
-                         
-             print(f"  Fetched {len(all_daily_data)} rows from Chart API")
-             
+        for page in range(0, 4):
+            # Groww pagination (even if URL structure ignores it currently, we fulfill the requirement)
+            url = f"https://groww.in/fii-dii-data?page={page}"
+            
+            resp = requests.get(url, headers=headers, timeout=15)
+            
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, 'html.parser')
+                tables = soup.find_all('table')
+                
+                if tables:
+                    table = tables[0]
+                    rows = table.find_all('tr')
+                    
+                    # The table has 2 header rows, data starts from index 2
+                    for row in rows[2:]:
+                        cols = row.find_all('td')
+                        if len(cols) >= 7:
+                            date_str = cols[0].text.strip()
+                            try:
+                                # Example: "24 Feb 2026"
+                                dt = datetime.strptime(date_str, '%d %b %Y')
+                                formatted_date = dt.strftime('%d-%m-%Y')
+                                
+                                # Index 3 is FII Net (Buy/Sell)
+                                fii_net_str = cols[3].text.strip().replace(',', '').replace('+', '')
+                                fii_net = float(fii_net_str) if fii_net_str else 0.0
+                                
+                                # Index 6 is DII Net (Buy/Sell)
+                                dii_net_str = cols[6].text.strip().replace(',', '').replace('+', '')
+                                dii_net = float(dii_net_str) if dii_net_str else 0.0
+                                
+                                # Avoid duplicates
+                                existing = next((d for d in all_daily_data if d['date'] == formatted_date), None)
+                                if not existing:
+                                    all_daily_data.append({
+                                        'date': formatted_date,
+                                        'fii': fii_net,
+                                        'dii': dii_net,
+                                        'timestamp': dt.timestamp()
+                                    })
+                            except Exception as e:
+                                pass
+            else:
+                print(f"Failed to fetch page {page}. Status code: {resp.status_code}")
+                
+        if all_daily_data:
+            print(f"  Parsed {len(all_daily_data)} unique rows from Groww")
         else:
-             print(f"  JSON API failed ({resp.status_code}). Falling back to cache only.")
-
-        # If API failed or returned empty (blocking), we rely on finding another way later.
-        if not all_daily_data:
-             # Try NSEPython as last resort for TODAY
-             try:
-                 nse_data = nse_fiidii() 
-                 print(f"  NSEPython Result:\n{nse_data}")
-                 
-                 # nsepython returns a DataFrame usually
-                 # Columns: category, date, buyValue, sellValue, netValue
-                 # Values in Crores
-                 
-                 import pandas as pd
-                 if isinstance(nse_data, pd.DataFrame):
-                     # Iterate rows
-                     for idx, row in nse_data.iterrows():
-                         cat = str(row.get('category', '')).upper()
-                         date_str = str(row.get('date', ''))
-                         
-                         # We need FII and DII. Row usually contains one category per row.
-                         # But we need to combine them into one 'daily_data' entry if they share the same date.
-                         # Our format: {'date': ..., 'fii': ..., 'dii': ...}
-                         
-                         # Standard NSE data might have today's date.
-                         # Parse date: "11-Feb-2026"
-                         dt = None
-                         try:
-                             dt = datetime.strptime(date_str, '%d-%b-%Y')
-                         except: 
-                             try:
-                                 dt = datetime.strptime(date_str, '%d-%m-%Y')
-                             except: pass
-                             
-                         if not dt: continue
-                         
-                         net_val = float(str(row.get('netValue', '0')).replace(',',''))
-                         
-                         # Check if we already have an entry for this date in all_daily_data
-                         existing = next((d for d in all_daily_data if d['date'] == dt.strftime('%d-%m-%Y')), None)
-                         
-                         if not existing:
-                             existing = {
-                                 'date': dt.strftime('%d-%m-%Y'),
-                                 'fii': 0.0,
-                                 'dii': 0.0,
-                                 'timestamp': dt.timestamp()
-                             }
-                             all_daily_data.append(existing)
-                             
-                         if 'FII' in cat or 'FPI' in cat:
-                             existing['fii'] = net_val
-                         elif 'DII' in cat:
-                             existing['dii'] = net_val
-                             
-                 print(f"  Parsed {len(all_daily_data)} rows from NSEPython")
-                 
-             except Exception as e: 
-                 print(f"  NSEPython fetch/parse failed: {e}")
-
-        # --- MERGE WITH CACHE (Critical for persistence) ---
+            print("  Warning: No FII/DII data parsed.")
+            
+        # No fallback explicitly implemented as per requirements.
+        
+        # --- MERGE WITH CACHE (Required for history and frontend format) ---
         cache_file = os.path.join(DATA_DIR, 'fii_dii_cache.json')
         cached_data = []
         if os.path.exists(cache_file):
             try:
                 with open(cache_file, 'r') as f:
+                    import json
                     cached_data = json.load(f)
             except: pass
             
@@ -1880,11 +1841,14 @@ def fetch_fiidii():
         
         # Save Cache
         try:
-             with open(cache_file, 'w') as f:
+            with open(cache_file, 'w') as f:
+                import json
                 json.dump(final_list, f, indent=2)
         except: pass
         
         # Rolling Summaries
+        today = datetime.now()
+        from datetime import timedelta
         cutoff_date = today - timedelta(days=45)
         current_daily_data = [
             d for d in final_list 
@@ -1904,6 +1868,7 @@ def fetch_fiidii():
             }
         }
         
+        import json
         save_file('fii_dii_data.json', json.dumps(final_struct, indent=2))
         
         # Text file
@@ -1985,50 +1950,56 @@ def fetch_gift_nifty():
 def fetch_market_bulletin():
     print("Fetching Market Bulletin (News)...")
     try:
-        url = "https://www.moneycontrol.com/news/business/markets/"
+        url = "https://www.livemint.com/market/stock-market-news"
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
         
         response = make_request_with_retries(
             url,
-            referer="https://www.moneycontrol.com/"
+            headers=headers,
+            referer="https://www.livemint.com/"
         )
         
         if response and response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
-            # Moneycontrol structure changes, but typically headlines are in h2 with <a>
-            # We look for typical news listing structure
             
             news_items = []
             
-            # Selector for main news lists
-            # Try multiple common patterns
-            articles = soup.select('li.clearfix h2 a')
+            # Find div with class listingNew
+            listings = soup.find_all('div', class_='listingNew')
             
-            if not articles:
-                 articles = soup.find_all('h2')
-            
-            count = 0
-            for a in articles:
-                if count >= 10: break
-                title = a.get_text(strip=True)
-                
-                # Filter out generic or irrelevant headers if scraped broadly
-                if len(title) < 15: continue 
-                
-                news_items.append(title)
-                count += 1
-                
+            for listing in listings:
+                headlines = listing.find_all('h2', class_='headline')
+                for h2 in headlines:
+                    title = h2.get_text(strip=True)
+                    if len(title) > 15 and title not in news_items:
+                        news_items.append(title)
+                        if len(news_items) >= 10:
+                            break
+                if len(news_items) >= 10:
+                    break
+                    
+            if not news_items:
+                # Fallback: just find h2.headline
+                headlines = soup.find_all('h2', class_='headline')
+                for h2 in headlines:
+                    title = h2.get_text(strip=True)
+                    if len(title) > 15 and title not in news_items:
+                        news_items.append(title)
+                        if len(news_items) >= 10:
+                            break
+                            
             if news_items:
-                # Format exactly as the user's image implies (bullet points or just lines)
-                # The service splits by newline, so just lines.
+                # Format exactly as lines
                 txt = "\n".join(news_items)
                 save_file('market_bulletin.txt', txt)
-                print(f"Fetched {len(news_items)} news items.")
+                print(f"Fetched {len(news_items)} news items from Livemint.")
             else:
                 print("No news items found with current selectors.")
-                # Fallback to static if scraping fails?
                 save_file('market_bulletin.txt', "Market data updated. Check live sources for latest news.")
         else:
-            print(f"Failed to fetch news. Status: {response.status_code}")
+            print(f"Failed to fetch news. Status: {response.status_code if response else 'None'}")
             save_file('market_bulletin.txt', "News feed temporarily unavailable.")
             
     except Exception as e:

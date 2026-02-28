@@ -12,7 +12,8 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     define: {
       'process.env.API_KEY': JSON.stringify(env.GROQ_API_KEY),
-      'process.env.GROQ_API_KEY': JSON.stringify(env.GROQ_API_KEY)
+      'process.env.GROQ_API_KEY': JSON.stringify(env.GROQ_API_KEY),
+      'process.env.GROQ_API_KEY_BACKUP': JSON.stringify(env.GROQ_API_KEY_BACKUP)
     },
     resolve: {
       alias: {

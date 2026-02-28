@@ -1,162 +1,107 @@
 {
   "summary": {
-    "spot": 25968.05,
-    "pcr": 1.1511,
-    "call_oi": 3626968,
-    "put_oi": 4174984,
-    "support": 25900,
-    "resistance": 27100,
-    "timestamp": "Synthetic Data (2026-02-11 11:08:28)"
+    "spot": 25178.65,
+    "pcr": 1.0789,
+    "call_oi": 3874712,
+    "put_oi": 4180605,
+    "support": 25100,
+    "resistance": 26000,
+    "timestamp": "Synthetic Data (2026-02-28 07:44:59)"
   },
   "analysis_points": [
-    "Current PCR is **1.1511** with Total Put OI at **4,174,984** and Total Call OI at **3,626,968**.",
-    "The **1.1511** overall PCR indicates **neutral** sentiment, while the intraday chart shows NIFTY50's **consolidation**, accompanied by the intraday PCR **rising from lows**.",
-    "The market is expected to face strong resistance at the 27100 strike with a Call OI of 266394, indicating a potential hurdle for the bulls.",
-    "On the downside, the 25900 strike with a Put OI of 298005 is likely to act as a strong support level, providing a cushion for the market."
+    "Current PCR is **1.0789** with Total Put OI at **4,180,605** and Total Call OI at **3,874,712**.",
+    "The **1.0789** overall PCR indicates **neutral** sentiment, while the intraday chart shows NIFTY50's **consolidation**, accompanied by the intraday PCR **declining from its morning peak**.",
+    "The market is expected to face strong resistance at the 26000 strike with a Call OI of 286126, indicating a potential hurdle for the bulls.",
+    "On the downside, the 25100 strike with a Put OI of 293796 is likely to act as a strong support level, providing a cushion for the market."
   ],
   "oi_chart_data": [
     {
+      "strike": 24400,
+      "call_oi": 56236,
+      "put_oi": 135879
+    },
+    {
+      "strike": 24500,
+      "call_oi": 49858,
+      "put_oi": 277919
+    },
+    {
+      "strike": 24600,
+      "call_oi": 29805,
+      "put_oi": 211614
+    },
+    {
+      "strike": 24700,
+      "call_oi": 61583,
+      "put_oi": 199953
+    },
+    {
+      "strike": 24800,
+      "call_oi": 78986,
+      "put_oi": 192991
+    },
+    {
+      "strike": 24900,
+      "call_oi": 38459,
+      "put_oi": 205198
+    },
+    {
+      "strike": 25000,
+      "call_oi": 31383,
+      "put_oi": 291948
+    },
+    {
+      "strike": 25100,
+      "call_oi": 36949,
+      "put_oi": 293796
+    },
+    {
       "strike": 25200,
-      "call_oi": 29705,
-      "put_oi": 197646
+      "call_oi": 212753,
+      "put_oi": 36291
     },
     {
       "strike": 25300,
-      "call_oi": 80617,
-      "put_oi": 200513
+      "call_oi": 122843,
+      "put_oi": 65024
     },
     {
       "strike": 25400,
-      "call_oi": 78255,
-      "put_oi": 267193
+      "call_oi": 242854,
+      "put_oi": 80287
     },
     {
       "strike": 25500,
-      "call_oi": 63900,
-      "put_oi": 284790
+      "call_oi": 194420,
+      "put_oi": 37178
     },
     {
       "strike": 25600,
-      "call_oi": 88111,
-      "put_oi": 258796
+      "call_oi": 262594,
+      "put_oi": 30099
     },
     {
       "strike": 25700,
-      "call_oi": 47095,
-      "put_oi": 192507
+      "call_oi": 169662,
+      "put_oi": 62264
     },
     {
       "strike": 25800,
-      "call_oi": 29410,
-      "put_oi": 165303
+      "call_oi": 214430,
+      "put_oi": 23109
     },
     {
       "strike": 25900,
-      "call_oi": 33820,
-      "put_oi": 298005
+      "call_oi": 140516,
+      "put_oi": 43799
     },
     {
       "strike": 26000,
-      "call_oi": 250657,
-      "put_oi": 27199
-    },
-    {
-      "strike": 26100,
-      "call_oi": 152751,
-      "put_oi": 73618
-    },
-    {
-      "strike": 26200,
-      "call_oi": 216387,
-      "put_oi": 28467
-    },
-    {
-      "strike": 26300,
-      "call_oi": 172837,
-      "put_oi": 44440
-    },
-    {
-      "strike": 26400,
-      "call_oi": 116498,
-      "put_oi": 76626
-    },
-    {
-      "strike": 26500,
-      "call_oi": 102858,
-      "put_oi": 22088
-    },
-    {
-      "strike": 26600,
-      "call_oi": 183576,
-      "put_oi": 66411
-    },
-    {
-      "strike": 26700,
-      "call_oi": 254675,
-      "put_oi": 29138
-    },
-    {
-      "strike": 26800,
-      "call_oi": 122450,
-      "put_oi": 82414
+      "call_oi": 286126,
+      "put_oi": 92883
     }
   ],
   "pcr_trend_data": [
-    {
-      "time": "15:30:00",
-      "pcr": 0.5898,
-      "spot": 25048.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.5898,
-      "spot": 25048.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.5898,
-      "spot": 25048.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.5898,
-      "spot": 25048.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.5898,
-      "spot": 25048.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.5898,
-      "spot": 25048.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.8268,
-      "spot": 25342.75
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.8256,
-      "spot": 25342.75
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.7619,
-      "spot": 25320.65
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.9307,
-      "spot": 25088.4
-    },
-    {
-      "time": "15:30:00",
-      "pcr": 0.9307,
-      "spot": 25088.4
-    },
     {
       "time": "15:30:00",
       "pcr": 0.9212,
@@ -201,6 +146,61 @@
       "time": "11:08:28",
       "pcr": 1.1511,
       "spot": 25968.05
+    },
+    {
+      "time": "12:23:53",
+      "pcr": 0.9434,
+      "spot": 25589.8
+    },
+    {
+      "time": "13:08:10",
+      "pcr": 1.022,
+      "spot": 25449.95
+    },
+    {
+      "time": "13:41:43",
+      "pcr": 0.9838,
+      "spot": 25466.2
+    },
+    {
+      "time": "13:58:59",
+      "pcr": 1.055,
+      "spot": 25467.9
+    },
+    {
+      "time": "15:59:03",
+      "pcr": 1.0158,
+      "spot": 25482.5
+    },
+    {
+      "time": "16:17:58",
+      "pcr": 0.9331,
+      "spot": 25482.5
+    },
+    {
+      "time": "10:45:19",
+      "pcr": 1.0523,
+      "spot": 25535.2
+    },
+    {
+      "time": "11:04:42",
+      "pcr": 1.0659,
+      "spot": 25504.8
+    },
+    {
+      "time": "11:10:57",
+      "pcr": 1.1109,
+      "spot": 25514.9
+    },
+    {
+      "time": "19:12:31",
+      "pcr": 1.078,
+      "spot": 25496.55
+    },
+    {
+      "time": "07:44:59",
+      "pcr": 1.0789,
+      "spot": 25178.65
     }
   ]
 }

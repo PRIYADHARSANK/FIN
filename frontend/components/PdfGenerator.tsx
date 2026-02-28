@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Loader } from 'lucide-react';
@@ -9,8 +9,12 @@ interface PdfGeneratorProps {
 
 const PdfGenerator: React.FC<PdfGeneratorProps> = ({ onFinish }) => {
   const [status, setStatus] = useState('Initializing...');
+  const hasRun = useRef(false);
 
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     const generatePdf = async () => {
       setStatus('Waiting for fonts to load...');
       try {
@@ -18,9 +22,9 @@ const PdfGenerator: React.FC<PdfGeneratorProps> = ({ onFinish }) => {
       } catch (error) {
         console.warn("Fonts might not be fully loaded, continuing anyway:", error);
       }
-      
+
       // A small delay to ensure styles are applied, especially after showing the preview.
-      await new Promise(resolve => setTimeout(resolve, 500)); 
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const pageElements = document.querySelectorAll<HTMLElement>('.a4-page-container');
       if (pageElements.length === 0) {
@@ -50,7 +54,7 @@ const PdfGenerator: React.FC<PdfGeneratorProps> = ({ onFinish }) => {
           if (i > 0) {
             pdf.addPage();
           }
-          
+
           pdf.addImage(imgData, 'JPEG', 0, 0, a4Width, a4Height);
 
         } catch (error) {
@@ -65,7 +69,7 @@ const PdfGenerator: React.FC<PdfGeneratorProps> = ({ onFinish }) => {
       await new Promise(resolve => setTimeout(resolve, 500));
 
       try {
-        pdf.save('stonkzz-report.pdf');
+        pdf.save('Fincup~Report.pdf');
       } catch (error) {
         console.error('Failed to save the PDF file:', error);
         alert('Could not save the PDF file. Please try again.');
@@ -75,7 +79,7 @@ const PdfGenerator: React.FC<PdfGeneratorProps> = ({ onFinish }) => {
     };
 
     generatePdf();
-  }, [onFinish]);
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 text-white">

@@ -2,507 +2,507 @@
   "RELIANCE.NS": {
     "data": {
       "symbol": "RELIANCE",
-      "lastPrice": 1463.3,
-      "pChange": 0.33,
+      "lastPrice": 1398.5,
+      "pChange": -2.12,
       "yearHigh": 1611.8,
       "yearLow": 1110.42
     },
-    "timestamp": "2026-02-11T11:02:19.457736",
+    "timestamp": "2026-02-25T15:39:10.391319",
     "source": "Yahoo Finance"
   },
   "HDFCBANK.NS": {
     "data": {
       "symbol": "HDFCBANK",
-      "lastPrice": 929.2,
-      "pChange": -0.34,
+      "lastPrice": 907.6,
+      "pChange": -0.32,
       "yearHigh": 1020.5,
-      "yearLow": 819.47
+      "yearLow": 823.89
     },
-    "timestamp": "2026-02-11T11:02:21.001964",
+    "timestamp": "2026-02-25T15:39:12.387541",
     "source": "Yahoo Finance"
   },
   "ICICIBANK.NS": {
     "data": {
       "symbol": "ICICIBANK",
-      "lastPrice": 1403.1,
-      "pChange": -0.24,
+      "lastPrice": 1400.5,
+      "pChange": 1.13,
       "yearHigh": 1488.51,
       "yearLow": 1190.91
     },
-    "timestamp": "2026-02-11T11:02:22.580188",
+    "timestamp": "2026-02-25T15:39:14.307098",
     "source": "Yahoo Finance"
   },
   "INFY.NS": {
     "data": {
       "symbol": "INFY",
-      "lastPrice": 1488.2,
-      "pChange": -0.64,
-      "yearHigh": 1848.3,
-      "yearLow": 1269.43
+      "lastPrice": 1290.1,
+      "pChange": 1.14,
+      "yearHigh": 1728.0,
+      "yearLow": 1264.1
     },
-    "timestamp": "2026-02-11T11:02:24.563246",
+    "timestamp": "2026-02-25T15:39:15.746580",
     "source": "Yahoo Finance"
   },
   "ITC.NS": {
     "data": {
       "symbol": "ITC",
-      "lastPrice": 319.15,
-      "pChange": -0.7,
+      "lastPrice": 319.75,
+      "pChange": -1.16,
       "yearHigh": 427.21,
       "yearLow": 295.8
     },
-    "timestamp": "2026-02-11T11:02:25.805154",
+    "timestamp": "2026-02-25T15:39:17.228412",
     "source": "Yahoo Finance"
   },
   "TCS.NS": {
     "data": {
       "symbol": "TCS",
-      "lastPrice": 2968.9,
-      "pChange": -0.53,
-      "yearHigh": 3905.04,
-      "yearLow": 2804.96
+      "lastPrice": 2629.3,
+      "pChange": 2.16,
+      "yearHigh": 3586.07,
+      "yearLow": 2561.3
     },
-    "timestamp": "2026-02-11T11:02:27.008802",
+    "timestamp": "2026-02-25T15:39:18.579662",
     "source": "Yahoo Finance"
   },
   "LICI.NS": {
     "data": {
       "symbol": "LICI",
-      "lastPrice": 870.85,
-      "pChange": -2.34,
+      "lastPrice": 874.85,
+      "pChange": -0.81,
       "yearHigh": 967.18,
       "yearLow": 705.94
     },
-    "timestamp": "2026-02-11T11:02:28.893009",
+    "timestamp": "2026-02-25T15:39:20.069191",
     "source": "Yahoo Finance"
   },
   "BHARTIARTL.NS": {
     "data": {
       "symbol": "BHARTIARTL",
-      "lastPrice": 2004.4,
-      "pChange": -0.34,
+      "lastPrice": 1913.4,
+      "pChange": -1.42,
       "yearHigh": 2174.5,
       "yearLow": 1546.57
     },
-    "timestamp": "2026-02-11T11:02:30.161996",
+    "timestamp": "2026-02-25T15:39:21.276110",
     "source": "Yahoo Finance"
   },
   "SBIN.NS": {
     "data": {
       "symbol": "SBIN",
-      "lastPrice": 1168.6,
-      "pChange": 2.14,
-      "yearHigh": 1171.4,
+      "lastPrice": 1200.1,
+      "pChange": -1.9,
+      "yearHigh": 1234.7,
       "yearLow": 666.61
     },
-    "timestamp": "2026-02-11T11:02:31.310168",
+    "timestamp": "2026-02-25T15:39:22.851524",
     "source": "Yahoo Finance"
   },
   "HINDUNILVR.NS": {
     "data": {
       "symbol": "HINDUNILVR",
-      "lastPrice": 2462.4,
-      "pChange": 0.36,
+      "lastPrice": 2374.9,
+      "pChange": 0.69,
       "yearHigh": 2728.55,
       "yearLow": 2097.28
     },
-    "timestamp": "2026-02-11T11:02:32.945802",
+    "timestamp": "2026-02-25T15:39:24.561575",
     "source": "Yahoo Finance"
   },
   "LT.NS": {
     "data": {
       "symbol": "LT",
-      "lastPrice": 4160.7,
-      "pChange": -0.2,
-      "yearHigh": 4195.0,
+      "lastPrice": 4298.5,
+      "pChange": 0.92,
+      "yearHigh": 4440.0,
       "yearLow": 2937.9
     },
-    "timestamp": "2026-02-11T11:02:34.701014",
+    "timestamp": "2026-02-25T15:39:26.970169",
     "source": "Yahoo Finance"
   },
   "BAJFINANCE.NS": {
     "data": {
       "symbol": "BAJFINANCE",
-      "lastPrice": 972.85,
-      "pChange": 0.75,
+      "lastPrice": 1021.05,
+      "pChange": -0.24,
       "yearHigh": 1102.5,
-      "yearLow": 797.58
+      "yearLow": 816.09
     },
-    "timestamp": "2026-02-11T11:02:36.388678",
+    "timestamp": "2026-02-25T15:39:28.640225",
     "source": "Yahoo Finance"
   },
   "MARUTI.NS": {
     "data": {
       "symbol": "MARUTI",
-      "lastPrice": 15375.0,
-      "pChange": 1.51,
+      "lastPrice": 15070.0,
+      "pChange": 0.96,
       "yearHigh": 17370.0,
       "yearLow": 10941.03
     },
-    "timestamp": "2026-02-11T11:02:38.332038",
+    "timestamp": "2026-02-25T15:39:30.838567",
     "source": "Yahoo Finance"
   },
   "AXISBANK.NS": {
     "data": {
       "symbol": "AXISBANK",
-      "lastPrice": 1351.0,
-      "pChange": -0.42,
+      "lastPrice": 1403.0,
+      "pChange": 1.11,
       "yearHigh": 1418.3,
-      "yearLow": 977.21
+      "yearLow": 991.15
     },
-    "timestamp": "2026-02-11T11:02:40.170010",
+    "timestamp": "2026-02-25T15:39:32.116297",
     "source": "Yahoo Finance"
   },
   "SUNPHARMA.NS": {
     "data": {
       "symbol": "SUNPHARMA",
-      "lastPrice": 1706.0,
-      "pChange": -0.11,
+      "lastPrice": 1764.2,
+      "pChange": 1.87,
       "yearHigh": 1837.07,
       "yearLow": 1537.96
     },
-    "timestamp": "2026-02-11T11:02:41.418326",
+    "timestamp": "2026-02-25T15:39:33.611013",
     "source": "Yahoo Finance"
   },
   "TITAN.NS": {
     "data": {
       "symbol": "TITAN",
-      "lastPrice": 4246.4,
-      "pChange": -0.53,
+      "lastPrice": 4325.0,
+      "pChange": 0.71,
       "yearHigh": 4378.4,
       "yearLow": 2916.22
     },
-    "timestamp": "2026-02-11T11:02:42.696398",
+    "timestamp": "2026-02-25T15:39:35.255325",
     "source": "Yahoo Finance"
   },
   "ULTRACEMCO.NS": {
     "data": {
       "symbol": "ULTRACEMCO",
-      "lastPrice": 12935.0,
-      "pChange": -0.68,
+      "lastPrice": 13041.0,
+      "pChange": 0.62,
       "yearHigh": 13110.0,
       "yearLow": 9984.56
     },
-    "timestamp": "2026-02-11T11:02:44.821333",
+    "timestamp": "2026-02-25T15:39:36.701945",
     "source": "Yahoo Finance"
   },
   "ASIANPAINT.NS": {
     "data": {
       "symbol": "ASIANPAINT",
-      "lastPrice": 2389.6,
-      "pChange": -0.17,
+      "lastPrice": 2416.4,
+      "pChange": 0.14,
       "yearHigh": 2985.7,
       "yearLow": 2102.05
     },
-    "timestamp": "2026-02-11T11:02:46.290685",
+    "timestamp": "2026-02-25T15:39:38.365855",
     "source": "Yahoo Finance"
   },
   "NTPC.NS": {
     "data": {
       "symbol": "NTPC",
-      "lastPrice": 366.85,
-      "pChange": -0.01,
-      "yearHigh": 369.0,
-      "yearLow": 285.27
+      "lastPrice": 384.9,
+      "pChange": 0.56,
+      "yearHigh": 388.55,
+      "yearLow": 298.67
     },
-    "timestamp": "2026-02-11T11:02:48.014301",
+    "timestamp": "2026-02-25T15:39:39.762576",
     "source": "Yahoo Finance"
   },
   "M&M.NS": {
     "data": {
       "symbol": "M&M",
-      "lastPrice": 3761.9,
-      "pChange": 2.34,
+      "lastPrice": 3491.3,
+      "pChange": 1.69,
       "yearHigh": 3839.9,
       "yearLow": 2405.67
     },
-    "timestamp": "2026-02-11T11:02:49.535509",
+    "timestamp": "2026-02-25T15:39:41.033657",
     "source": "Yahoo Finance"
   },
   "HCLTECH.NS": {
     "data": {
       "symbol": "HCLTECH",
-      "lastPrice": 1556.8,
-      "pChange": -1.04,
+      "lastPrice": 1378.2,
+      "pChange": 2.91,
       "yearHigh": 1780.1,
       "yearLow": 1258.64
     },
-    "timestamp": "2026-02-11T11:02:50.909942",
+    "timestamp": "2026-02-25T15:39:42.226292",
     "source": "Yahoo Finance"
   },
   "KOTAKBANK.NS": {
     "data": {
       "symbol": "KOTAKBANK",
-      "lastPrice": 429.15,
-      "pChange": -0.03,
+      "lastPrice": 424.95,
+      "pChange": -0.64,
       "yearHigh": 459.85,
       "yearLow": 378.34
     },
-    "timestamp": "2026-02-11T11:02:53.001270",
+    "timestamp": "2026-02-25T15:39:43.866954",
     "source": "Yahoo Finance"
   },
   "POWERGRID.NS": {
     "data": {
       "symbol": "POWERGRID",
-      "lastPrice": 294.1,
-      "pChange": -0.08,
+      "lastPrice": 307.25,
+      "pChange": 0.8,
       "yearHigh": 311.81,
       "yearLow": 239.47
     },
-    "timestamp": "2026-02-11T11:02:54.757760",
+    "timestamp": "2026-02-25T15:39:45.844506",
     "source": "Yahoo Finance"
   },
   "ONGC.NS": {
     "data": {
       "symbol": "ONGC",
-      "lastPrice": 269.05,
-      "pChange": -1.14,
-      "yearHigh": 277.77,
-      "yearLow": 199.05
+      "lastPrice": 277.45,
+      "pChange": 0.34,
+      "yearHigh": 280.8,
+      "yearLow": 194.47
     },
-    "timestamp": "2026-02-11T11:02:56.332991",
+    "timestamp": "2026-02-25T15:39:47.609031",
     "source": "Yahoo Finance"
   },
   "ADANIENT.NS": {
     "data": {
       "symbol": "ADANIENT",
-      "lastPrice": 2222.8,
-      "pChange": -0.25,
+      "lastPrice": 2231.7,
+      "pChange": 2.23,
       "yearHigh": 2695.0,
       "yearLow": 1848.0
     },
-    "timestamp": "2026-02-11T11:02:57.825989",
+    "timestamp": "2026-02-25T15:39:50.215649",
     "source": "Yahoo Finance"
   },
   "TATASTEEL.NS": {
     "data": {
       "symbol": "TATASTEEL",
-      "lastPrice": 206.6,
-      "pChange": -0.68,
-      "yearHigh": 211.1,
+      "lastPrice": 214.64,
+      "pChange": 2.63,
+      "yearHigh": 216.45,
       "yearLow": 122.44
     },
-    "timestamp": "2026-02-11T11:02:59.825979",
+    "timestamp": "2026-02-25T15:39:52.009033",
     "source": "Yahoo Finance"
   },
   "COALINDIA.NS": {
     "data": {
       "symbol": "COALINDIA",
-      "lastPrice": 422.15,
-      "pChange": -2.04,
-      "yearHigh": 461.55,
-      "yearLow": 330.62
+      "lastPrice": 438.6,
+      "pChange": 1.78,
+      "yearHigh": 455.53,
+      "yearLow": 329.25
     },
-    "timestamp": "2026-02-11T11:03:01.078181",
+    "timestamp": "2026-02-25T15:39:53.398418",
     "source": "Yahoo Finance"
   },
   "WIPRO.NS": {
     "data": {
       "symbol": "WIPRO",
-      "lastPrice": 230.7,
-      "pChange": -0.33,
-      "yearHigh": 306.31,
-      "yearLow": 217.97
+      "lastPrice": 201.92,
+      "pChange": 0.89,
+      "yearHigh": 283.27,
+      "yearLow": 199.36
     },
-    "timestamp": "2026-02-11T11:03:03.289256",
+    "timestamp": "2026-02-25T15:39:55.377882",
     "source": "Yahoo Finance"
   },
   "JSWSTEEL.NS": {
     "data": {
       "symbol": "JSWSTEEL",
-      "lastPrice": 1246.1,
-      "pChange": 0.16,
-      "yearHigh": 1261.9,
+      "lastPrice": 1275.0,
+      "pChange": 1.63,
+      "yearHigh": 1284.7,
       "yearLow": 902.77
     },
-    "timestamp": "2026-02-11T11:03:04.920832",
+    "timestamp": "2026-02-25T15:39:56.706628",
     "source": "Yahoo Finance"
   },
   "ADANIPORTS.NS": {
     "data": {
       "symbol": "ADANIPORTS",
-      "lastPrice": 1542.2,
-      "pChange": -0.8,
-      "yearHigh": 1583.9,
+      "lastPrice": 1528.7,
+      "pChange": -1.72,
+      "yearHigh": 1584.0,
       "yearLow": 1031.48
     },
-    "timestamp": "2026-02-11T11:03:06.561478",
+    "timestamp": "2026-02-25T15:39:58.158703",
     "source": "Yahoo Finance"
   },
   "ADANIPOWER.NS": {
     "data": {
       "symbol": "ADANIPOWER",
-      "lastPrice": 148.84,
-      "pChange": -0.14,
+      "lastPrice": 140.54,
+      "pChange": -2.61,
       "yearHigh": 182.7,
       "yearLow": 92.4
     },
-    "timestamp": "2026-02-11T11:03:08.416361",
+    "timestamp": "2026-02-25T15:39:59.351100",
     "source": "Yahoo Finance"
   },
   "BPCL.NS": {
     "data": {
       "symbol": "BPCL",
-      "lastPrice": 389.15,
-      "pChange": 0.72,
+      "lastPrice": 381.05,
+      "pChange": 1.76,
       "yearHigh": 391.65,
       "yearLow": 219.64
     },
-    "timestamp": "2026-02-11T11:03:10.127360",
+    "timestamp": "2026-02-25T15:40:00.976259",
     "source": "Yahoo Finance"
   },
   "CIPLA.NS": {
     "data": {
       "symbol": "CIPLA",
       "lastPrice": 1346.1,
-      "pChange": 0.3,
+      "pChange": 1.46,
       "yearHigh": 1673.0,
       "yearLow": 1281.7
     },
-    "timestamp": "2026-02-11T11:03:11.990947",
+    "timestamp": "2026-02-25T15:40:02.799187",
     "source": "Yahoo Finance"
   },
   "DIVISLAB.NS": {
     "data": {
       "symbol": "DIVISLAB",
-      "lastPrice": 6231.5,
-      "pChange": 0.91,
+      "lastPrice": 6395.5,
+      "pChange": 2.24,
       "yearHigh": 7039.45,
       "yearLow": 4932.54
     },
-    "timestamp": "2026-02-11T11:03:13.250001",
+    "timestamp": "2026-02-25T15:40:04.560305",
     "source": "Yahoo Finance"
   },
   "DRREDDY.NS": {
     "data": {
       "symbol": "DRREDDY",
-      "lastPrice": 1266.0,
-      "pChange": 0.8,
+      "lastPrice": 1306.5,
+      "pChange": 0.48,
       "yearHigh": 1371.0,
       "yearLow": 1013.57
     },
-    "timestamp": "2026-02-11T11:03:15.466606",
+    "timestamp": "2026-02-25T15:40:06.677523",
     "source": "Yahoo Finance"
   },
   "EICHERMOT.NS": {
     "data": {
       "symbol": "EICHERMOT",
-      "lastPrice": 7775.5,
-      "pChange": 6.57,
-      "yearHigh": 7805.0,
-      "yearLow": 4586.53
+      "lastPrice": 8008.0,
+      "pChange": 1.0,
+      "yearHigh": 8140.0,
+      "yearLow": 4694.13
     },
-    "timestamp": "2026-02-11T11:03:16.937133",
+    "timestamp": "2026-02-25T15:40:08.535026",
     "source": "Yahoo Finance"
   },
   "GRASIM.NS": {
     "data": {
       "symbol": "GRASIM",
-      "lastPrice": 2924.0,
-      "pChange": -1.01,
+      "lastPrice": 2878.4,
+      "pChange": -0.03,
       "yearHigh": 2979.0,
       "yearLow": 2293.31
     },
-    "timestamp": "2026-02-11T11:03:18.739561",
+    "timestamp": "2026-02-25T15:40:09.841245",
     "source": "Yahoo Finance"
   },
   "HDFCLIFE.NS": {
     "data": {
       "symbol": "HDFCLIFE",
-      "lastPrice": 699.9,
-      "pChange": -0.58,
+      "lastPrice": 735.25,
+      "pChange": 0.07,
       "yearHigh": 820.75,
       "yearLow": 598.7
     },
-    "timestamp": "2026-02-11T11:03:20.173513",
+    "timestamp": "2026-02-25T15:40:11.742753",
     "source": "Yahoo Finance"
   },
   "HEROMOTOCO.NS": {
     "data": {
       "symbol": "HEROMOTOCO",
-      "lastPrice": 5714.0,
-      "pChange": 1.25,
+      "lastPrice": 5737.5,
+      "pChange": 4.11,
       "yearHigh": 6266.36,
       "yearLow": 3231.21
     },
-    "timestamp": "2026-02-11T11:03:21.377517",
+    "timestamp": "2026-02-25T15:40:13.039011",
     "source": "Yahoo Finance"
   },
   "HINDALCO.NS": {
     "data": {
       "symbol": "HINDALCO",
-      "lastPrice": 957.1,
-      "pChange": -1.22,
+      "lastPrice": 937.4,
+      "pChange": 1.58,
       "yearHigh": 1029.8,
       "yearLow": 542.47
     },
-    "timestamp": "2026-02-11T11:03:22.889033",
+    "timestamp": "2026-02-25T15:40:15.596526",
     "source": "Yahoo Finance"
   },
   "INDUSINDBK.NS": {
     "data": {
       "symbol": "INDUSINDBK",
-      "lastPrice": 921.9,
-      "pChange": -0.61,
-      "yearHigh": 1074.9,
+      "lastPrice": 937.35,
+      "pChange": 0.64,
+      "yearHigh": 1063.3,
       "yearLow": 606.0
     },
-    "timestamp": "2026-02-11T11:03:24.492001",
+    "timestamp": "2026-02-25T15:40:17.001865",
     "source": "Yahoo Finance"
   },
   "NESTLEIND.NS": {
     "data": {
       "symbol": "NESTLEIND",
-      "lastPrice": 1313.0,
-      "pChange": 0.34,
-      "yearHigh": 1333.2,
+      "lastPrice": 1323.4,
+      "pChange": 0.26,
+      "yearHigh": 1334.8,
       "yearLow": 1044.94
     },
-    "timestamp": "2026-02-11T11:03:26.018413",
+    "timestamp": "2026-02-25T15:40:18.597760",
     "source": "Yahoo Finance"
   },
   "SBILIFE.NS": {
     "data": {
       "symbol": "SBILIFE",
-      "lastPrice": 2021.0,
-      "pChange": 0.13,
-      "yearHigh": 2109.6,
+      "lastPrice": 2073.6,
+      "pChange": -0.45,
+      "yearHigh": 2132.0,
       "yearLow": 1377.23
     },
-    "timestamp": "2026-02-11T11:03:27.606939",
+    "timestamp": "2026-02-25T15:40:20.387015",
     "source": "Yahoo Finance"
   },
   "TATACONSUM.NS": {
     "data": {
       "symbol": "TATACONSUM",
-      "lastPrice": 1157.8,
-      "pChange": 0.49,
+      "lastPrice": 1172.3,
+      "pChange": -0.48,
       "yearHigh": 1220.9,
       "yearLow": 923.26
     },
-    "timestamp": "2026-02-11T11:03:28.865859",
+    "timestamp": "2026-02-25T15:40:22.178875",
     "source": "Yahoo Finance"
   },
   "TECHM.NS": {
     "data": {
       "symbol": "TECHM",
-      "lastPrice": 1646.0,
-      "pChange": 0.09,
+      "lastPrice": 1361.8,
+      "pChange": 1.22,
       "yearHigh": 1854.0,
       "yearLow": 1175.39
     },
-    "timestamp": "2026-02-11T11:03:30.381409",
+    "timestamp": "2026-02-25T15:40:24.158743",
     "source": "Yahoo Finance"
   },
   "UPL.NS": {
     "data": {
       "symbol": "UPL",
-      "lastPrice": 751.55,
-      "pChange": 0.74,
+      "lastPrice": 626.2,
+      "pChange": -0.69,
       "yearHigh": 812.2,
       "yearLow": 583.51
     },
-    "timestamp": "2026-02-11T11:03:32.499436",
+    "timestamp": "2026-02-25T15:40:25.871520",
     "source": "Yahoo Finance"
   }
 }

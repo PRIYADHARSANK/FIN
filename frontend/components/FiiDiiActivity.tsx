@@ -35,14 +35,14 @@ const FiiDiiActivity: React.FC<FiiDiiActivityProps> = ({ data }) => {
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 border-2 border-brand-black shadow-neobrutalism rounded-lg">
-                    <p className="font-bold text-brand-black mb-2">{label}</p>
+                <div className="bg-white p-3 border-2 border-retro-border shadow-retro rounded-lg">
+                    <p className="font-bold text-retro-border mb-2 uppercase tracking-wide">{label}</p>
                     {payload.map((entry: any, index: number) => (
-                        <div key={index} className="flex items-center gap-2 text-sm">
-                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }} />
-                            <span className="font-bold text-gray-600">{entry.name}:</span>
-                            <span className={`font-mono font-bold ${entry.value > 0 ? 'text-brand-green' : 'text-brand-red'}`}>
-                                {formatCurrency(entry.value)} Cr
+                        <div key={index} className="flex items-center gap-2 text-base uppercase tracking-wider">
+                            <div className="w-3 h-3 rounded-none border-[1px] border-retro-border" style={{ backgroundColor: entry.color }} />
+                            <span className="font-bold text-retro-border">{entry.name}:</span>
+                            <span className={`font-mono font-bold ${entry.value > 0 ? 'text-retro-green' : 'text-retro-red'}`}>
+                                {formatCurrency(entry.value)} CR
                             </span>
                         </div>
                     ))}
@@ -53,14 +53,14 @@ const FiiDiiActivity: React.FC<FiiDiiActivityProps> = ({ data }) => {
     };
 
     const getColorClass = (value: number) => {
-        return value > 0 ? 'text-brand-green' : value < 0 ? 'text-brand-red' : 'text-slate-600';
+        return value > 0 ? 'text-retro-green' : value < 0 ? 'text-retro-red' : 'text-retro-muted';
     };
 
     return (
-        <div className="bg-brand-beige p-6 rounded-xl border-2 border-brand-black shadow-neobrutalism mb-8">
-            <div className="flex items-center gap-3 mb-6">
-                <Briefcase size={32} className="text-brand-black" />
-                <h2 className="text-2xl font-bold font-heading text-brand-black">FII/DII Activity (Net Crores)</h2>
+        <div className="bg-retro-card p-6 rounded-xl border-[3px] border-retro-border shadow-retro mb-8 font-mono">
+            <div className="flex items-center gap-4 mb-6">
+                <Briefcase size={36} className="text-retro-border" />
+                <h2 className="text-3xl font-bold text-retro-border uppercase tracking-widest leading-none">FII/DII Activity (Net Crores)</h2>
             </div>
 
             {/* Chart Section */}
@@ -101,46 +101,46 @@ const FiiDiiActivity: React.FC<FiiDiiActivityProps> = ({ data }) => {
                 </ResponsiveContainer>
             </div>
 
-            <div className="border-2 border-brand-black rounded-lg overflow-hidden bg-white">
-                <table className="w-full">
+            <div className="border-[3px] border-retro-border rounded-lg bg-white overflow-hidden shadow-sm">
+                <table className="w-full text-lg">
                     <thead>
-                        <tr className="bg-brand-beige border-b-2 border-brand-black">
-                            <th className="py-3 px-4 text-left font-bold text-brand-black">Period</th>
-                            <th className="py-3 px-4 text-right font-bold text-brand-black">FII (Cr)</th>
-                            <th className="py-3 px-4 text-right font-bold text-brand-black">DII (Cr)</th>
+                        <tr className="bg-retro-green-light border-b-[3px] border-retro-border uppercase tracking-widest">
+                            <th className="py-3 px-4 text-left font-bold text-retro-border">Period</th>
+                            <th className="py-3 px-4 text-right font-bold text-retro-border">FII (CR)</th>
+                            <th className="py-3 px-4 text-right font-bold text-retro-border">DII (CR)</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-retro-card">
                         {daily_data.map((item, index) => (
-                            <tr key={index} className="border-b border-brand-black/20 last:border-0 hover:bg-brand-beige/20 active:bg-brand-beige/40 transition-colors">
-                                <td className="py-3 px-4 font-bold text-brand-black">{item.date}</td>
-                                <td className={`py-3 px-4 text-right font-bold font-mono ${getColorClass(item.fii)}`}>
+                            <tr key={index} className="border-b-2 border-retro-border/20 last:border-0 hover:bg-white/50 transition-colors uppercase">
+                                <td className="py-3 px-4 font-bold text-retro-border tracking-wider">{item.date}</td>
+                                <td className={`py-3 px-4 text-right font-bold text-xl tracking-wider ${getColorClass(item.fii)}`}>
                                     {formatCurrency(item.fii)}
                                 </td>
-                                <td className={`py-3 px-4 text-right font-bold font-mono ${getColorClass(item.dii)}`}>
+                                <td className={`py-3 px-4 text-right font-bold text-xl tracking-wider ${getColorClass(item.dii)}`}>
                                     {formatCurrency(item.dii)}
                                 </td>
                             </tr>
                         ))}
 
                         {/* Last 7 Days Summary */}
-                        <tr className="bg-brand-beige/50 border-t-2 border-brand-black/50">
-                            <td className="py-3 px-4 font-bold text-brand-black">Last 7 Days</td>
-                            <td className={`py-3 px-4 text-right font-bold font-mono ${getColorClass(summary.last_7_days.fii)}`}>
+                        <tr className="bg-retro-green-light border-t-[3px] border-retro-border uppercase">
+                            <td className="py-3 px-4 font-bold text-retro-border tracking-wider">Last 7 Days</td>
+                            <td className={`py-3 px-4 text-right font-bold text-xl tracking-wider ${getColorClass(summary.last_7_days.fii)}`}>
                                 {formatCurrency(summary.last_7_days.fii)}
                             </td>
-                            <td className={`py-3 px-4 text-right font-bold font-mono ${getColorClass(summary.last_7_days.dii)}`}>
+                            <td className={`py-3 px-4 text-right font-bold text-xl tracking-wider ${getColorClass(summary.last_7_days.dii)}`}>
                                 {formatCurrency(summary.last_7_days.dii)}
                             </td>
                         </tr>
 
                         {/* Last 10 Days Summary */}
-                        <tr className="bg-brand-beige/50 border-t border-brand-black/20">
-                            <td className="py-3 px-4 font-bold text-brand-black">Last 10 Days</td>
-                            <td className={`py-3 px-4 text-right font-bold font-mono ${getColorClass(summary.last_10_days.fii)}`}>
+                        <tr className="bg-retro-green-light border-t-2 border-retro-border/20 uppercase">
+                            <td className="py-3 px-4 font-bold text-retro-border tracking-wider">Last 10 Days</td>
+                            <td className={`py-3 px-4 text-right font-bold text-xl tracking-wider ${getColorClass(summary.last_10_days.fii)}`}>
                                 {formatCurrency(summary.last_10_days.fii)}
                             </td>
-                            <td className={`py-3 px-4 text-right font-bold font-mono ${getColorClass(summary.last_10_days.dii)}`}>
+                            <td className={`py-3 px-4 text-right font-bold text-xl tracking-wider ${getColorClass(summary.last_10_days.dii)}`}>
                                 {formatCurrency(summary.last_10_days.dii)}
                             </td>
                         </tr>

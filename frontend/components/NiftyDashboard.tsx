@@ -17,33 +17,40 @@ const RangeSlider: React.FC<RangeSliderProps> = ({ low, high, current, label }) 
   const highFormatted = high.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
-    <div className="w-full">
-      <h3 className="font-bold text-lg mb-4">{label}</h3>
-      <div className="relative h-2 w-full">
-        <div className="absolute top-1/2 -translate-y-1/2 w-full h-1.5 bg-gradient-to-r from-red-400 via-yellow-300 to-green-400 rounded-full"></div>
-        <div 
-          className="absolute top-1/2 -translate-y-1/2" 
-          style={{ left: `calc(${safePercentage}% - 10px)` }}
+    <div className="w-full flex-grow flex flex-col">
+      <div className="w-full text-left font-bold text-xl tracking-widest uppercase text-retro-border mb-2">
+        {label}
+      </div>
+      <div className="w-full relative mt-16 mb-8">
+        {/* Track */}
+        <div className="absolute top-1/2 -translate-y-1/2 w-full h-3 bg-gradient-to-r from-retro-red via-amber-400 to-retro-green rounded-full border-2 border-retro-border"></div>
+        {/* Thumb */}
+        <div
+          className="absolute top-1/2 -translate-y-1/2"
+          style={{ left: `calc(${safePercentage}% - 12px)` }}
         >
           <div className="relative flex justify-center">
+            {/* Tooltip Bubble */}
             <div className="absolute -top-10">
-              <div className="px-2 py-1 bg-gray-800 text-white text-xs font-bold rounded shadow-lg whitespace-nowrap">
+              <div className="px-3 py-1 bg-retro-border text-white text-base font-bold rounded-md shadow-sm whitespace-nowrap">
                 {currentFormatted}
               </div>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-[4px] border-t-gray-800"></div>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-[6px] border-t-retro-border"></div>
             </div>
-            <div className="w-5 h-5 bg-white rounded-full border-2 border-gray-400 shadow"></div>
+            {/* Slider Knob */}
+            <div className="w-6 h-6 bg-white rounded-full border-[3px] border-retro-border shadow-sm"></div>
           </div>
         </div>
       </div>
-      <div className="flex justify-between items-center mt-3 text-sm">
-        <div>
-          <span className="text-slate-500">Low</span>
-          <p className="font-semibold">{lowFormatted}</p>
+      {/* Labels below the track */}
+      <div className="flex justify-between items-center w-full uppercase tracking-wider">
+        <div className="text-left leading-tight">
+          <span className="text-retro-border text-base font-bold block">LOW</span>
+          <p className="font-bold text-lg">{lowFormatted}</p>
         </div>
-        <div className="text-right">
-          <span className="text-slate-500">High</span>
-          <p className="font-semibold">{highFormatted}</p>
+        <div className="text-right leading-tight">
+          <span className="text-retro-border text-base font-bold block">HIGH</span>
+          <p className="font-bold text-lg">{highFormatted}</p>
         </div>
       </div>
     </div>
@@ -56,62 +63,60 @@ const NiftyDashboard: React.FC<{ data: NiftyDashboardData }> = ({ data }) => {
 
   const isZero = parseFloat(data.changeValue.replace(/,/g, '')) === 0;
 
-  const changeColor = isZero
-    ? 'text-slate-500' // Neutral color for zero change
-    : data.isPositive ? 'text-green-500' : 'text-red-500';
+  const changeBg = isZero
+    ? 'bg-slate-300 text-retro-border'
+    : data.isPositive ? 'bg-retro-green text-white' : 'bg-retro-red text-white';
 
   const ChangeIcon = isZero
     ? null
     : data.isPositive ? '↑' : '↓';
 
   return (
-    <div className="bg-[#FBF5EB] border-2 border-[#E7D8C9] rounded-lg p-4 font-sans text-brand-black">
-      {/* Top section: Title, Current Price and Change */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-bold">NIFTY 50</h2>
-        <div className="flex items-baseline gap-4">
-          <span className="text-2xl font-bold font-mono">₹{data.currentValue}</span>
-          <div className={`flex items-center gap-1 font-bold ${changeColor}`}>
-            {ChangeIcon && <span className="text-xl leading-none font-sans">{ChangeIcon}</span>}
-            <span>{data.changeValue} ({data.changePercent})</span>
+    <div className="bg-retro-card border-2 border-retro-border rounded-lg p-5 font-mono text-retro-border shadow-retro">
+      {/* Top section: Title, Current Price and Change Pill */}
+      <div className="flex justify-between items-center bg-retro-green-light border-2 border-retro-border rounded-lg p-4 mb-4">
+        <h2 className="text-3xl font-bold uppercase tracking-widest pl-2">NIFTY 50</h2>
+        <div className="flex items-center gap-6 pr-2">
+          <span className="text-4xl font-bold">₹{data.currentValue}</span>
+          <div className={`flex items-center gap-2 font-bold px-3 py-2 rounded-md border-2 border-retro-border ${changeBg} shadow-sm`}>
+            {ChangeIcon && <span className="text-xl leading-none">{ChangeIcon}</span>}
+            <span className="text-xl tracking-wider">{data.changeValue} ({data.changePercent})</span>
           </div>
         </div>
       </div>
 
-      <hr className="border-t border-[#E7D8C9] my-3" />
-
-      {/* Mid section: Prev Close, Open, Volume */}
-      <div className="grid grid-cols-3 gap-4 text-center">
-        <div>
-          <p className="text-sm text-slate-500">Prev. Close</p>
-          <p className="font-semibold text-lg">{data.prevClose}</p>
+      {/* Mid section: Prev Close, Open, Volume Cards */}
+      <div className="grid grid-cols-3 gap-6 text-center mb-6">
+        <div className="bg-white border-[2px] border-retro-border rounded-lg p-3">
+          <p className="text-sm text-retro-border font-bold uppercase tracking-widest mb-1">PREV. CLOSE</p>
+          <p className="font-bold text-2xl">{data.prevClose}</p>
         </div>
-        <div>
-          <p className="text-sm text-slate-500">Open</p>
-          <p className="font-semibold text-lg">₹{data.open}</p>
+        <div className="bg-white border-[2px] border-retro-border rounded-lg p-3">
+          <p className="text-sm text-retro-border font-bold uppercase tracking-widest mb-1">OPEN</p>
+          <p className="font-bold text-2xl">₹{data.open}</p>
         </div>
-        <div>
-          <p className="text-sm text-slate-500">Volume (Lakhs)</p>
-          <p className="font-semibold text-lg">{data.volume}</p>
+        <div className="bg-white border-[2px] border-retro-border rounded-lg p-3">
+          <p className="text-sm text-retro-border font-bold uppercase tracking-widest mb-1">VOLUME (LAKHS)</p>
+          <p className="font-bold text-2xl">{data.volume}</p>
         </div>
       </div>
 
       {/* Bottom section: Sliders */}
-      <div className="flex gap-8 mt-6">
-        <div className="w-1/2">
-          <RangeSlider 
-              label="52 Week"
-              low={data.week52.low}
-              high={data.week52.high}
-              current={data.week52.current}
+      <div className="flex gap-12 mt-4 px-4 pb-2">
+        <div className="w-1/2 flex">
+          <RangeSlider
+            label="52 WEEK"
+            low={data.week52.low}
+            high={data.week52.high}
+            current={data.week52.current}
           />
         </div>
-        <div className="w-1/2">
-          <RangeSlider 
-              label="Intraday"
-              low={data.intraday.low}
-              high={data.intraday.high}
-              current={data.intraday.current}
+        <div className="w-1/2 flex">
+          <RangeSlider
+            label="INTRADAY"
+            low={data.intraday.low}
+            high={data.intraday.high}
+            current={data.intraday.current}
           />
         </div>
       </div>

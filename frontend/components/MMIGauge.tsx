@@ -21,45 +21,54 @@ const MMIGauge: React.FC<MMIGaugeProps> = ({ value, date }) => {
     const rotation = (safeValue / 100) * 180 - 90;
 
     return (
-        <div className="w-full flex flex-col items-center">
-            <svg viewBox="0 0 300 160" className="w-full max-w-md">
-                {/* Zones Arcs */}
-                {/* Red: 0-30 */}
-                <path d="M 30 130 A 120 120 0 0 1 65.5 48.6" fill="none" stroke="#DC2626" strokeWidth="25" />
-                {/* Yellow: 30-50 */}
-                <path d="M 69.5 44.5 A 120 120 0 0 1 150 10" fill="none" stroke="#FBBF24" strokeWidth="25" />
-                {/* Lime: 50-70 */}
-                <path d="M 150 10 A 120 120 0 0 1 230.5 44.5" fill="none" stroke="#A3E635" strokeWidth="25" />
-                {/* Green: 70-100 */}
-                <path d="M 234.5 48.6 A 120 120 0 0 1 270 130" fill="none" stroke="#16A34A" strokeWidth="25" />
+        <div className="w-full flex flex-col items-center font-mono">
+            <svg viewBox="0 0 300 170" className="w-full max-w-md">
+                <defs>
+                    <filter id="retro-shadow" x="-10%" y="-10%" width="130%" height="130%">
+                        <feDropShadow dx="4" dy="4" stdDeviation="0" floodColor="#1A1A1A" />
+                    </filter>
+                </defs>
 
-                {/* Tick Marks (Manual for clarity) */}
-                <text x="35" y="155" fontSize="12" fontWeight="bold" fill="#333">0</text>
-                <text x="60" y="35" fontSize="12" fontWeight="bold" fill="#333">30</text>
-                <text x="142" y="30" fontSize="12" fontWeight="bold" fill="#333">50</text>
-                <text x="235" y="35" fontSize="12" fontWeight="bold" fill="#333">70</text>
-                <text x="255" y="155" fontSize="12" fontWeight="bold" fill="#333">100</text>
-
-                {/* Zone Labels */}
-                <text x="60" y="90" fontSize="10" fontWeight="bold" fill="#DC2626" transform="rotate(-45, 60, 90)">EXT FEAR</text>
-                <text x="110" y="60" fontSize="10" fontWeight="bold" fill="#D97706" transform="rotate(-20, 110, 60)">FEAR</text>
-                <text x="190" y="60" fontSize="10" fontWeight="bold" fill="#65A30D" transform="rotate(20, 190, 60)">GREED</text>
-                <text x="240" y="90" fontSize="10" fontWeight="bold" fill="#16A34A" transform="rotate(45, 240, 90)">EXT GREED</text>
-
+                {/* Arcs & Needle grouped for shadow */}
+                <g filter="url(#retro-shadow)">
+                    {/* Zones Arcs */}
+                    {/* Red: 0-30 */}
+                    <path d="M 30 130 A 120 120 0 0 1 65.5 48.6" fill="none" stroke="#D9534F" strokeWidth="25" />
+                    {/* Yellow: 30-50 */}
+                    <path d="M 69.5 44.5 A 120 120 0 0 1 150 10" fill="none" stroke="#FBBF24" strokeWidth="25" />
+                    {/* Lime: 50-70 */}
+                    <path d="M 150 10 A 120 120 0 0 1 230.5 44.5" fill="none" stroke="#A3E635" strokeWidth="25" />
+                    {/* Green: 70-100 */}
+                    <path d="M 234.5 48.6 A 120 120 0 0 1 270 130" fill="none" stroke="#5CB85C" strokeWidth="25" />
+                </g>
 
                 {/* Needle */}
                 <g transform={`translate(150, 130) rotate(${rotation})`}>
-                    <path d="M -4 0 L 0 -110 L 4 0 Z" fill="#1E293B" />
-                    <circle cx="0" cy="0" r="8" fill="#1E293B" />
+                    <path d="M -4 0 L 0 -110 L 4 0 Z" fill="#1A1A1A" />
+                    <circle cx="0" cy="0" r="10" fill="#1A1A1A" />
+                    <circle cx="0" cy="0" r="4" fill="#F4F0E6" />
                 </g>
 
+                {/* Tick Marks (Moved safely inside the arc shadow, centered) */}
+                <text x="50" y="135" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1A1A1A" fontFamily="VT323, monospace">0</text>
+                <text x="94" y="63" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1A1A1A" fontFamily="VT323, monospace">30</text>
+                <text x="150" y="38" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1A1A1A" fontFamily="VT323, monospace">50</text>
+                <text x="206" y="63" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1A1A1A" fontFamily="VT323, monospace">70</text>
+                <text x="250" y="135" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1A1A1A" fontFamily="VT323, monospace">100</text>
+
+                {/* Zone Labels (Moved further inside, centrally anchored and rotated perfectly along the curve) */}
+                <text x="80" y="105" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1A1A" transform="rotate(-55, 80, 105)" fontFamily="VT323, monospace" letterSpacing="1px">EXT FEAR</text>
+                <text x="120" y="67" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1A1A" transform="rotate(-15, 120, 67)" fontFamily="VT323, monospace" letterSpacing="1px">FEAR</text>
+                <text x="180" y="67" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1A1A" transform="rotate(15, 180, 67)" fontFamily="VT323, monospace" letterSpacing="1px">GREED</text>
+                <text x="220" y="105" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1A1A" transform="rotate(55, 220, 105)" fontFamily="VT323, monospace" letterSpacing="1px">EXT GREED</text>
+
                 {/* Value Text display */}
-                <text x="150" y="155" textAnchor="middle" fontSize="20" fontWeight="bold" fill="#1E293B">
+                <text x="150" y="165" textAnchor="middle" fontSize="30" fontWeight="bold" fill="#1A1A1A" fontFamily="VT323, monospace">
                     {safeValue.toFixed(2)}
                 </text>
             </svg>
             <div className="mt-2 text-center">
-                {date && <p className="text-xs text-slate-500 font-semibold">Updated: {date}</p>}
+                {date && <p className="text-base text-retro-muted font-bold tracking-widest uppercase">Updated: {date}</p>}
             </div>
         </div>
     );

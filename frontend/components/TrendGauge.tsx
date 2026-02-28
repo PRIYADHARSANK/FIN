@@ -7,26 +7,21 @@ interface TrendGaugeProps {
 
 const TrendGauge: React.FC<TrendGaugeProps> = ({ score, label = "Trend Strength" }) => {
     // Determine color and text based on score
-    let color = 'text-yellow-500';
+    let color = 'text-amber-500';
     let text = 'Neutral';
-    let gaugeColor = '#EAB308'; // yellow-500
 
     if (score >= 80) {
-        color = 'text-green-600';
+        color = 'text-retro-green';
         text = 'Strong Buy';
-        gaugeColor = '#16A34A';
     } else if (score >= 60) {
-        color = 'text-green-500';
+        color = 'text-retro-green';
         text = 'Buy';
-        gaugeColor = '#22C55E';
     } else if (score <= 20) {
-        color = 'text-red-600';
+        color = 'text-retro-red';
         text = 'Strong Sell';
-        gaugeColor = '#DC2626';
     } else if (score <= 40) {
-        color = 'text-red-500';
+        color = 'text-retro-red';
         text = 'Sell';
-        gaugeColor = '#EF4444';
     }
 
     // Rotation for needle: 0 to 180 degrees.
@@ -34,19 +29,19 @@ const TrendGauge: React.FC<TrendGaugeProps> = ({ score, label = "Trend Strength"
     const rotation = (score / 100) * 180;
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 bg-white/50 rounded-xl border border-brand-black/20 shadow-sm">
-            <h3 className="text-lg font-bold font-heading mb-2">{label}</h3>
+        <div className="flex flex-col items-center justify-center p-5 bg-retro-card rounded-lg border-[3px] border-retro-border shadow-retro font-mono">
+            <h3 className="text-xl font-bold uppercase tracking-widest mb-4 text-retro-border">{label}</h3>
 
             {/* Gauge Container */}
             <div className="relative w-48 h-24 overflow-hidden mb-2">
                 {/* Background Arc */}
-                <div className="absolute top-0 left-0 w-48 h-48 rounded-full border-[20px] border-slate-200 box-border"></div>
+                <div className="absolute top-0 left-0 w-48 h-48 rounded-full border-[20px] border-retro-paper box-border"></div>
 
                 {/* Colored Arc - simplified as zones or just gradient? Gradient is nice */}
                 <div
                     className="absolute top-0 left-0 w-48 h-48 rounded-full border-[20px] border-transparent box-border"
                     style={{
-                        background: `conic-gradient(from 180deg, #EF4444 0deg, #F59E0B 90deg, #22C55E 180deg)`,
+                        background: `conic-gradient(from 180deg, #D9534F 0deg, #FBBF24 90deg, #5CB85C 180deg)`,
                         maskImage: 'radial-gradient(transparent 55%, black 56%)',
                         WebkitMaskImage: 'radial-gradient(transparent 55%, black 56%)'
                     }}
@@ -54,17 +49,17 @@ const TrendGauge: React.FC<TrendGaugeProps> = ({ score, label = "Trend Strength"
 
                 {/* Needle */}
                 <div
-                    className="absolute bottom-0 left-1/2 w-1 h-24 bg-brand-black origin-bottom transform transition-transform duration-1000 ease-out"
+                    className="absolute bottom-0 left-1/2 w-1.5 h-24 bg-retro-border origin-bottom transform transition-transform duration-1000 ease-out"
                     style={{ transform: `translateX(-50%) rotate(${rotation - 90}deg)` }}
                 >
-                    <div className="absolute -top-1 -left-1.5 w-4 h-4 rounded-full bg-brand-black"></div>
+                    <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-retro-border border-2 border-white"></div>
                 </div>
             </div>
 
             {/* Value Text */}
-            <div className="text-center mt-[-10px] z-10">
-                <div className="text-2xl font-bold font-mono">{score}</div>
-                <div className={`text-sm font-bold uppercase ${color}`}>{text}</div>
+            <div className="text-center mt-[-5px] z-10">
+                <div className="text-3xl font-bold">{score}</div>
+                <div className={`text-base font-bold uppercase tracking-wider ${color} bg-white px-2 py-0.5 border-2 border-retro-border mt-1`}>{text}</div>
             </div>
         </div>
     );

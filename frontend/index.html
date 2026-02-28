@@ -7,14 +7,21 @@
   <title>Market Report Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Inter:wght@400;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
+            'retro-paper': '#F4F0E6',
+            'retro-card': '#EBE4D3',
+            'retro-green-light': '#E0E8D5',
+            'retro-green': '#5CB85C',
+            'retro-red': '#D9534F',
+            'retro-border': '#1A1A1A',
+            'retro-muted': '#5A5A5A',
+            // Keep original colors for backwards compatibility if needed during transition
             'brand-beige': '#FDF6E9',
             'brand-black': '#1E293B',
             'brand-green': '#16A34A',
@@ -22,10 +29,14 @@
             'brand-yellow': '#FBBF24',
           },
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            heading: ['Fredoka', 'sans-serif'],
-            mono: ['ui-monospace', 'monospace'],
+            sans: ['VT323', 'monospace'],
+            heading: ['VT323', 'monospace'],
+            mono: ['VT323', 'monospace'],
           },
+          boxShadow: {
+            'retro': '4px 4px 0px 0px rgba(0,0,0,1)',
+            'retro-sm': '2px 2px 0px 0px rgba(0,0,0,1)',
+          }
         },
       },
     };
@@ -51,9 +62,38 @@
 </script>
   <script type="module" src="/index.tsx"></script>
   <link rel="stylesheet" href="/index.css">
+  <style>
+    /* Global Reset & Base Styles for Retro Vibe */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #F4F0E6; /* retro-paper */
+      color: #1A1A1A; /* retro-border */
+      font-family: 'VT323', monospace;
+      /* Pixelated rendering for a sharper look if needed */
+      -webkit-font-smoothing: none;
+    }
+    
+    /* Utility class for physical button feeling */
+    .retro-btn {
+      transition: all 0.1s ease;
+      box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+    }
+    .retro-btn:active, .retro-btn.active-state {
+      transform: translate(4px, 4px) !important;
+      box-shadow: 0px 0px 0px 0px rgba(0,0,0,1) !important;
+    }
+    .retro-btn:disabled {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.5);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 
-<body class="bg-brand-beige">
+<body class="bg-retro-paper text-retro-border">
   <div id="root"></div>
 </body>
 

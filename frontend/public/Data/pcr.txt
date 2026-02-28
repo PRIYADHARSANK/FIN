@@ -1,3 +1,3 @@
-Current PCR: 1.1511
-Total Put OI: 4174984
-Total Call OI: 3626968
+Current PCR: 1.0789
+Total Put OI: 4180605
+Total Call OI: 3874712

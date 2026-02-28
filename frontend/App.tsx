@@ -355,7 +355,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-beige font-sans text-brand-black flex flex-col items-center p-4 sm:p-8">
+    <div className="min-h-screen bg-retro-paper font-mono text-retro-border flex flex-col items-center p-4 sm:p-8">
       {isGeneratingPdf && reportData && (
         <PdfGenerator
           onFinish={() => setIsGeneratingPdf(false)}
@@ -363,56 +363,56 @@ const App: React.FC = () => {
       )}
       <div className="w-full max-w-4xl text-center">
         <div className="flex items-center justify-center gap-4 mb-4">
-          <FileText size={40} className="text-brand-black" />
-          <h1 className="text-4xl sm:text-5xl font-bold font-heading">Market Report Generator</h1>
+          <FileText size={40} className="text-retro-border" />
+          <h1 className="text-4xl sm:text-5xl font-bold uppercase tracking-wider">Market Report Generator</h1>
         </div>
-        <p className="text-lg mb-8 text-slate-600">
+        <p className="text-lg mb-8 text-retro-muted font-semibold tracking-wide">
           Generate a beautiful, multi-page financial report. View it, or save it as a PDF.
         </p>
 
-        <div className="bg-white/50 p-6 rounded-lg border-2 border-brand-black shadow-md flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="bg-retro-card p-6 rounded-lg border-2 border-retro-border shadow-retro flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
           <button
             onClick={handleViewAsWebsite}
             disabled={isLoading || !reportData || isGeneratingPdf}
-            className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-brand-green text-brand-black font-bold font-heading rounded-lg border-2 border-brand-black text-xl hover:bg-emerald-500 transition-all duration-300 disabled:bg-slate-400 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 bg-retro-green text-white font-bold rounded-md border-2 border-retro-border text-lg hover:brightness-110 disabled:bg-slate-400 retro-btn uppercase"
           >
-            <Globe />
-            <span>View as Website</span>
+            <Globe size={20} />
+            <span>View Website</span>
           </button>
 
           <button
             onClick={handleSaveAsPdf}
             disabled={isLoading || !reportData || isGeneratingPdf || isCapturingScreenshot}
-            className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-blue-500 text-white font-bold font-heading rounded-lg border-2 border-brand-black text-xl hover:bg-blue-600 transition-all duration-300 disabled:bg-slate-400 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 bg-blue-500 text-white font-bold rounded-md border-2 border-retro-border text-lg hover:brightness-110 disabled:bg-slate-400 retro-btn uppercase"
           >
-            <FileDown />
-            <span>Save as PDF</span>
+            <FileDown size={20} />
+            <span>Save PDF</span>
           </button>
 
           <button
             onClick={handleCaptureFromWebsite}
             disabled={isLoading || !reportData || isGeneratingPdf || isCapturingScreenshot || isCapturingFromWebsite}
-            className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-teal-500 text-white font-bold font-heading rounded-lg border-2 border-brand-black text-xl hover:bg-teal-600 transition-all duration-300 disabled:bg-slate-400 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 bg-teal-500 text-white font-bold rounded-md border-2 border-retro-border text-lg hover:brightness-110 disabled:bg-slate-400 retro-btn uppercase"
           >
-            <Globe />
-            <span>{isCapturingFromWebsite ? 'Capturing...' : 'Capture First 5 Pages (Website)'}</span>
+            <Globe size={20} />
+            <span>{isCapturingFromWebsite ? 'Capturing...' : 'Capture Web'}</span>
           </button>
 
           <button
             onClick={handleCaptureScreenshot}
             disabled={isLoading || !reportData || isGeneratingPdf || isCapturingScreenshot}
-            className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-purple-500 text-white font-bold font-heading rounded-lg border-2 border-brand-black text-xl hover:bg-purple-600 transition-all duration-300 disabled:bg-slate-400 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 bg-purple-500 text-white font-bold rounded-md border-2 border-retro-border text-lg hover:brightness-110 disabled:bg-slate-400 retro-btn uppercase"
           >
-            <Camera />
-            <span>{isCapturingScreenshot ? 'Capturing...' : 'Capture All Pages'}</span>
+            <Camera size={20} />
+            <span>{isCapturingScreenshot ? 'Capturing...' : 'Capture All'}</span>
           </button>
 
           <button
             onClick={() => setShowPreview(!showPreview)}
             disabled={isLoading || isGeneratingPdf}
-            className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-brand-yellow text-brand-black font-bold font-heading rounded-lg border-2 border-brand-black text-lg hover:bg-amber-400 transition-all duration-300 disabled:bg-slate-400"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-amber-400 text-retro-border font-bold rounded-md border-2 border-retro-border text-lg hover:brightness-110 disabled:bg-slate-400 retro-btn uppercase"
           >
-            <Eye />
+            <Eye size={20} />
             <span>{showPreview ? 'Hide' : 'Show'} Preview</span>
           </button>
         </div>
@@ -421,23 +421,23 @@ const App: React.FC = () => {
       {/* Report Content Area */}
       <div className="w-full">
         {isLoading && (
-          <div className="mt-8 flex flex-col items-center justify-center text-slate-700 font-semibold p-8">
-            <Loader className="animate-spin" size={48} />
-            <p className="mt-4 text-lg">Loading dynamic report data...</p>
+          <div className="mt-8 flex flex-col items-center justify-center text-retro-border font-bold p-8">
+            <Loader className="animate-spin mb-4" size={48} />
+            <p className="text-xl uppercase tracking-widest animate-pulse">Loading Data...</p>
           </div>
         )}
 
         {error && (
-          <div className="mt-8 flex flex-col items-center justify-center text-center text-brand-red p-6 bg-red-100 border-2 border-brand-red rounded-lg">
+          <div className="mt-8 flex flex-col items-center justify-center text-center text-white p-6 bg-retro-red border-2 border-retro-border rounded-lg shadow-retro max-w-2xl mx-auto">
             <AlertTriangle size={48} className="mb-4" />
-            <h2 className="text-2xl font-bold font-heading mb-2">Error Loading Data</h2>
-            <p>{error}</p>
+            <h2 className="text-2xl font-bold uppercase tracking-wider mb-2">System Error</h2>
+            <p className="font-semibold">{error}</p>
           </div>
         )}
 
         {reportData && (
-          <div className={`transition-opacity duration-500 w-full ${showPreview ? 'opacity-100 mt-8' : 'opacity-100 absolute -left-[9999px]'}`}>
-            <div id="report-preview-container" className="border-4 border-dashed border-slate-400 p-2 rounded-lg bg-white">
+          <div className={`transition-opacity duration-300 w-full flex justify-center ${showPreview ? 'opacity-100 mt-4' : 'opacity-100 absolute -left-[9999px]'}`}>
+            <div id="report-preview-container" className="bg-white border-2 border-retro-border shadow-retro p-2 rounded-lg">
               <Report data={reportData} />
             </div>
           </div>

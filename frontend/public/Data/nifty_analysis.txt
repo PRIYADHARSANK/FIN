@@ -1,6 +1,6 @@
-TrendScore: 90
-Resistance 1: 25999.58
-Support 1: 25900.03
-Trend: Strong Bullish
-SMA20: 25516.99
-SMA50: 25813.71
+TrendScore: 30
+Resistance 1: 25389.60
+Support 1: 25054.50
+Trend: Bearish
+SMA20: 25625.58
+SMA50: 25714.32

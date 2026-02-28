@@ -69,19 +69,24 @@ Highlight the most important keywords (like the total PCR value, sentiment label
 Example: "The current PCR of **1.09** indicates a **Slight Bearish Lean**, suggesting defensive positioning by market participants."`;
 
     // 3. Call the Groq API with Error Handling.
-    try {
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
-
-        const completion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
+    // Try primary key first, then backup key, then static fallback.
+    const tryGroqWithKey = async (apiKey: string) => {
+        const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
+        return groq.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
             model: "llama-3.3-70b-versatile",
-            temperature: 0.2, // Lower temperature for more deterministic rule following
+            temperature: 0.2,
         });
+    };
+
+    try {
+        let completion;
+        try {
+            completion = await tryGroqWithKey(process.env.GROQ_API_KEY!);
+        } catch (primaryError) {
+            console.warn("Groq primary key failed for PCR, trying backup key...", primaryError);
+            completion = await tryGroqWithKey(process.env.GROQ_API_KEY_BACKUP!);
+        }
 
         // 4. Parse and return the structured response.
         const summary = completion.choices[0]?.message?.content || "";
@@ -92,7 +97,7 @@ Example: "The current PCR of **1.09** indicates a **Slight Bearish Lean**, sugge
             };
         }
     } catch (e) {
-        console.warn("Groq API failed for PCR (Rate Limit?), using fallback.", e);
+        console.warn("Both Groq API keys failed for PCR, using static fallback.", e);
         const pcrVal = parseFloat(pcr);
         let sentiment = "Neutral / Balanced";
 

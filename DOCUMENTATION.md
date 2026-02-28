@@ -1,14 +1,14 @@
-# 📊 StonkzzReport - Complete Technical Documentation
+# 📊 Fincup - Complete Technical Documentation
 
 ---
 
 ## 🎯 Introduction
 
-**StonkzzReport** is a comprehensive market report generation system designed to automatically fetch, analyze, and visualize Indian stock market data. The application creates beautiful, multi-page market reports with real-time data from various financial sources and **automatically emails the PDF report to configured recipients**.
+**Fincup** is a comprehensive market report generation system designed to automatically fetch, analyze, and visualize Indian stock market data. The application creates beautiful, retro pixel-art styled multi-page market reports with real-time data from various financial sources and **automatically emails the PDF report to configured recipients**.
 
 ### What Does It Do?
 
-StonkzzReport aggregates data from multiple financial platforms and generates:
+Fincup aggregates data from multiple financial platforms and generates:
 - **11-page professional market reports**
 - **Real-time NIFTY 50 data and analysis**
 - **Options chain visualization with PCR analysis**
@@ -26,7 +26,7 @@ StonkzzReport aggregates data from multiple financial platforms and generates:
 | 🤖 **AI Analysis** | GROQ-powered market sentiment analysis using LLaMA 3.3 |
 | 📧 **Email Automation** | Auto-generates PDF and emails it to recipients immediately |
 | 📷 **High-Quality Export** | PDF generation via Headless Browser (Playwright) |
-| 🎨 **Modern UI** | React 19 with Tailwind CSS, responsive design |
+| 🎨 **Modern UI** | React 19 with Tailwind CSS, featuring a retro pixel-art aesthetic (VT323 font) |
 | 🔄 **Multi-Source Fallback** | Automatic failover between data sources |
 | 📊 **Options Analysis** | PCR calculation, support/resistance levels |
 
@@ -35,7 +35,7 @@ StonkzzReport aggregates data from multiple financial platforms and generates:
 ## 🏗️ Architecture Overview
 
 ```
-StonkzzReport/
+Fincup/
 ├── generate_pdf_report.py     # PDF generation & email orchestrator [NEW]
 ├── backend/                   # Python data fetching layer
 │   ├── fetch_data_v3.py       # Main data orchestrator (2100+ lines)

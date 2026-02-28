@@ -76,25 +76,32 @@ Example: {"analysis": ["Market sentiment is in **Fear** zone 😰 (MMI: 40.50) (
 `;
 
     // 4. Call the Groq API with Error Handling.
-    try {
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
-
+    // Try primary key first, then backup key, then static fallback.
+    const tryGroqWithKey = async (apiKey: string) => {
+        const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
         const completion = await groq.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: "llama-3.3-70b-versatile",
-            temperature: 0.3, // Lower temp for strict adherence
+            temperature: 0.3,
             response_format: { type: "json_object" }
         });
+        return completion;
+    };
+
+    try {
+        let completion;
+        try {
+            completion = await tryGroqWithKey(process.env.GROQ_API_KEY!);
+        } catch (primaryError) {
+            console.warn("Groq primary key failed for MMI, trying backup key...", primaryError);
+            completion = await tryGroqWithKey(process.env.GROQ_API_KEY_BACKUP!);
+        }
 
         // 5. Parse the JSON response.
         const jsonStr = completion.choices[0]?.message?.content || "";
 
         const parsed = JSON.parse(jsonStr);
         if (parsed.analysis && Array.isArray(parsed.analysis) && parsed.analysis.length > 0) {
-
-            // Fallback: If LLM ignored the instruction, force it if we have zoneAnalysis.
-            // But we trust Llama-3.3 usually.
-
             return {
                 current,
                 previous,
@@ -103,7 +110,7 @@ Example: {"analysis": ["Market sentiment is in **Fear** zone 😰 (MMI: 40.50) (
             };
         }
     } catch (e) {
-        console.warn("Groq API failed for MMI (Rate Limit?), using fallback.", e);
+        console.warn("Both Groq API keys failed for MMI, using static fallback.", e);
         return {
             current,
             previous,

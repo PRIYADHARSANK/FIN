@@ -12,7 +12,7 @@ import {
 import NiftyDashboard from './NiftyDashboard';
 import HeatmapGrid from './HeatmapGrid';
 import FiiDiiActivity from './FiiDiiActivity';
-import TrendGauge from './TrendGauge';
+
 import VixTrendChart from './VixTrendChart';
 
 
@@ -23,19 +23,19 @@ interface ReportProps {
 
 // Internal components for styling
 const Page: React.FC<{ title: string; children: ReactNode; pageNumber: number; date: string; }> = ({ title, children, pageNumber, date }) => (
-  <div className="a4-page-container bg-brand-beige p-8 flex flex-col shadow-lg font-sans text-brand-black w-[800px]">
-    <header className="flex justify-between items-center pb-4 border-b-2 border-brand-black">
-      <div className="flex items-center gap-3">
-        <img src="https://raw.githubusercontent.com/Prasannapriyan/Generator/refs/heads/main/logo.png" alt="Stonkzz Logo" className="h-16" />
-        <h1 className="text-2xl font-bold font-heading">{title}</h1>
+  <div className="a4-page-container bg-retro-paper p-8 flex flex-col font-mono text-retro-border w-[800px]">
+    <header className="flex justify-between items-center pb-4 border-b-[4px] border-retro-border">
+      <div className="flex items-center gap-4">
+        <img src="/fincup_logo.png" alt="Fincup Logo" className="h-16" style={{ imageRendering: 'pixelated' }} />
+        <h1 className="text-3xl font-bold tracking-widest uppercase">{title}</h1>
       </div>
-      <p className="font-semibold font-heading">{date}</p>
+      <p className="font-bold text-lg uppercase tracking-wider">{date}</p>
     </header>
     <main className="flex-grow pt-6">
       {children}
     </main>
-    <footer className="text-center text-sm font-semibold pt-4 border-t-2 border-brand-black">
-      <p>www.stonkzz.com | Page {pageNumber}</p>
+    <footer className="text-center text-sm font-bold pt-4 border-t-[4px] border-retro-border uppercase tracking-widest mt-6">
+      <p>Page {pageNumber}</p>
     </footer>
   </div>
 );
@@ -44,9 +44,9 @@ const Section: React.FC<{ title: string; icon?: ReactNode; children: ReactNode }
   <div className="mb-6">
     <div className="flex items-center gap-3 mb-3">
       {icon}
-      <h2 className="text-2xl font-bold font-heading">{title}</h2>
+      <h2 className="text-2xl font-bold uppercase tracking-wider">{title}</h2>
     </div>
-    <div className="border-2 border-brand-black rounded-lg p-4 bg-white/30">
+    <div className="border-2 border-retro-border rounded-lg p-5 bg-retro-card shadow-retro">
       {children}
     </div>
   </div>
@@ -82,23 +82,23 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
   const InfoTable: React.FC<{ headers: string[], rows: (string | number)[][], highlightLast?: boolean, highlightChanges?: boolean }> = ({ headers, rows, highlightLast = false, highlightChanges = false }) => {
     const getTextColor = (cell: string | number) => {
       const s = cell.toString();
-      if (s.startsWith('+')) return 'text-brand-green';
-      if (s.startsWith('-')) return 'text-brand-red';
-      return 'text-brand-black';
+      if (s.startsWith('+')) return 'text-retro-green';
+      if (s.startsWith('-')) return 'text-retro-red';
+      return 'text-retro-border';
     };
 
     return (
-      <table className="w-full text-left text-sm">
+      <table className="w-full text-left text-lg border-collapse">
         <thead>
-          <tr className="border-b-2 border-brand-black">
-            {headers.map((h, i) => <th key={h} className={`p-2 font-bold font-heading text-brand-black ${i > 0 ? 'text-left' : ''}`}>{h}</th>)}
+          <tr className="border-b-[3px] border-retro-border">
+            {headers.map((h, i) => <th key={h} className={`p-4 font-bold uppercase tracking-wider ${i > 0 ? 'text-left' : ''}`}>{h}</th>)}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-retro-card">
           {rows.map((row, index) => (
-            <tr key={index} className="border-b border-brand-black/20">
+            <tr key={index} className="border-b-2 border-retro-border/30 hover:bg-white/50 transition-colors">
               {row.map((cell, cellIndex) => {
-                let textColor = 'text-brand-black';
+                let textColor = 'text-retro-border';
                 // Apply coloring logic based on props
                 if (highlightChanges && cellIndex > 0) {
                   textColor = getTextColor(cell);
@@ -107,7 +107,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
                 }
 
                 return (
-                  <td key={cellIndex} className={`p-2 ${cellIndex === 0 ? 'font-semibold' : 'font-mono'} ${textColor}`}>
+                  <td key={cellIndex} className={`p-3 font-bold ${textColor}`}>
                     {cell}
                   </td>
                 );
@@ -125,10 +125,10 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     const GoldChangeCard: React.FC<{ karat: '24K' | '22K'; data: GoldPrice }> = ({ karat, data }) => {
       const isPositive = data.change >= 0;
       return (
-        <div className="bg-emerald-50 rounded-lg p-4 border-2 border-brand-black flex flex-col justify-center items-center gap-2">
-          <p className="font-bold font-heading text-2xl text-brand-black">{karat} Gold <span className="text-lg text-slate-500">/g</span></p>
-          <p className="text-3xl font-bold font-mono text-brand-black">₹{data.price.toLocaleString()}</p>
-          <p className={`text-lg font-semibold ${isPositive ? 'text-brand-green' : 'text-brand-red'}`}>
+        <div className="bg-retro-green-light rounded-md p-5 border-2 border-retro-border flex flex-col justify-center items-center gap-2 shadow-sm">
+          <p className="font-bold text-2xl uppercase tracking-widest">{karat} Gold <span className="text-lg text-retro-muted">/g</span></p>
+          <p className="text-3xl font-bold">₹{data.price.toLocaleString()}</p>
+          <p className={`text-lg font-bold uppercase tracking-wider ${isPositive ? 'text-retro-green flex items-center gap-1' : 'text-retro-red flex items-center gap-1'}`}>
             {isPositive ? '+' : ''} ₹{Math.abs(data.change).toLocaleString()} {isPositive ? '▲' : '▼'}
           </p>
         </div>
@@ -137,34 +137,34 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
 
     const GoldHistoryTable: React.FC<{ history: GoldHistoryEntry[] }> = ({ history }) => {
       const getChangeColor = (change: number) => {
-        if (change > 0) return 'text-brand-green';
-        if (change < 0) return 'text-brand-red';
-        return 'text-brand-black';
+        if (change > 0) return 'text-retro-green';
+        if (change < 0) return 'text-retro-red';
+        return 'text-retro-border';
       };
       const reversedHistory = [...history].reverse();
 
       return (
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b-2 border-brand-black">
-              <th className="p-2 font-bold font-heading text-brand-black">Date</th>
-              <th className="p-2 font-bold font-heading text-brand-black text-left">24K Price (₹)</th>
-              <th className="p-2 font-bold font-heading text-brand-black text-left">22K Price (₹)</th>
+            <tr className="border-b-[3px] border-retro-border">
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border">Date</th>
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border text-left">24K Price (₹)</th>
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border text-left">22K Price (₹)</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-retro-card">
             {reversedHistory.map((item, index) => (
-              <tr key={index} className="border-b border-brand-black/20">
-                <td className="p-2 font-semibold text-brand-black">{item.date}</td>
-                <td className="p-2 font-mono text-brand-black">
+              <tr key={index} className="border-b-2 border-retro-border/20">
+                <td className="p-3 font-bold">{item.date}</td>
+                <td className="p-3 font-bold text-lg">
                   {item.price24k.toLocaleString()}
-                  <span className={`ml-2 ${getChangeColor(item.change24k)}`}>
+                  <span className={`ml-2 text-sm ${getChangeColor(item.change24k)}`}>
                     ({item.change24k >= 0 ? '+' : ''}{item.change24k})
                   </span>
                 </td>
-                <td className="p-2 font-mono text-brand-black">
+                <td className="p-3 font-bold text-lg">
                   {item.price22k.toLocaleString()}
-                  <span className={`ml-2 ${getChangeColor(item.change22k)}`}>
+                  <span className={`ml-2 text-sm ${getChangeColor(item.change22k)}`}>
                     ({item.change22k >= 0 ? '+' : ''}{item.change22k})
                   </span>
                 </td>
@@ -178,7 +178,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     const formatChartDate = (date: string) => date.split(',')[0];
 
     return (
-      <Page title="GOLD" pageNumber={pageNumber} date={data.date}>
+      <Page title="GOLD ☕" pageNumber={pageNumber} date={data.date}>
         <Section title="Gold Rate Today (Chennai)" icon={<Award className="text-amber-500" />}>
           <div className="grid grid-cols-2 gap-4">
             <GoldChangeCard karat="24K" data={data.goldData.today24k} />
@@ -219,10 +219,10 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
         ? { minimumFractionDigits: 2, maximumFractionDigits: 2 }
         : {};
       return (
-        <div className="bg-emerald-50 rounded-lg p-4 border-2 border-brand-black flex flex-col justify-center items-center gap-2">
-          <p className="font-bold font-heading text-2xl text-brand-black">Silver <span className="text-lg text-slate-500">/{type === 'gram' ? 'g' : 'kg'}</span></p>
-          <p className="text-3xl font-bold font-mono text-brand-black">₹{data.price.toLocaleString('en-IN')}</p>
-          <p className={`text-lg font-semibold ${isPositive ? 'text-brand-green' : 'text-brand-red'}`}>
+        <div className="bg-retro-green-light rounded-md p-5 border-2 border-retro-border flex flex-col justify-center items-center gap-2 shadow-sm">
+          <p className="font-bold text-2xl uppercase tracking-widest">Silver <span className="text-lg text-retro-muted">/{type === 'gram' ? 'g' : 'kg'}</span></p>
+          <p className="text-3xl font-bold">₹{data.price.toLocaleString('en-IN')}</p>
+          <p className={`text-lg font-bold uppercase tracking-wider ${isPositive ? 'text-retro-green flex items-center gap-1' : 'text-retro-red flex items-center gap-1'}`}>
             {isPositive ? '+' : ''} ₹{Math.abs(data.change).toLocaleString('en-IN', changeOptions)} {isPositive ? '▲' : '▼'}
           </p>
         </div>
@@ -231,8 +231,8 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
 
     const SilverHistoryTable: React.FC<{ history: SilverHistoryEntry[] }> = ({ history }) => {
       const getChangeColor = (change: number) => {
-        if (change >= 0) return 'text-brand-green';
-        return 'text-brand-red';
+        if (change >= 0) return 'text-retro-green';
+        return 'text-retro-red';
       };
       const reversedHistory = [...history].reverse();
       const numberFormat = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
@@ -240,25 +240,25 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
       return (
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b-2 border-brand-black">
-              <th className="p-2 font-bold font-heading text-brand-black">Date</th>
-              <th className="p-2 font-bold font-heading text-brand-black text-left">1 gram</th>
-              <th className="p-2 font-bold font-heading text-brand-black text-left">100 gram</th>
-              <th className="p-2 font-bold font-heading text-brand-black text-left">1 Kg</th>
+            <tr className="border-b-[3px] border-retro-border">
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border">Date</th>
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border text-left">1 gram</th>
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border text-left">100 gram</th>
+              <th className="p-3 font-bold uppercase tracking-wider text-retro-border text-left">1 Kg</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-retro-card">
             {reversedHistory.map((item, index) => (
-              <tr key={index} className="border-b border-brand-black/20">
-                <td className="p-2 font-semibold text-brand-black">{item.date}</td>
-                <td className="p-2 font-mono text-brand-black">
+              <tr key={index} className="border-b-2 border-retro-border/20">
+                <td className="p-3 font-bold">{item.date}</td>
+                <td className="p-3 font-bold text-lg">
                   ₹{item.price1g.toLocaleString('en-IN', numberFormat)}
-                  <span className={`ml-2 ${getChangeColor(item.change1g)}`}>
+                  <span className={`ml-2 text-sm ${getChangeColor(item.change1g)}`}>
                     ({item.change1g >= 0 ? '+' : ''}{item.change1g.toLocaleString('en-IN', numberFormat)})
                   </span>
                 </td>
-                <td className="p-2 font-mono text-brand-black">₹{item.price100g.toLocaleString('en-IN')}</td>
-                <td className="p-2 font-mono text-brand-black">₹{item.price1kg.toLocaleString('en-IN')}</td>
+                <td className="p-3 font-bold text-lg">₹{item.price100g.toLocaleString('en-IN')}</td>
+                <td className="p-3 font-bold text-lg">₹{item.price1kg.toLocaleString('en-IN')}</td>
               </tr>
             ))}
           </tbody>
@@ -274,7 +274,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     const formatChartDate = (date: string) => date.split(',')[0];
 
     return (
-      <Page title="SILVER" pageNumber={pageNumber} date={data.date}>
+      <Page title="SILVER ☕" pageNumber={pageNumber} date={data.date}>
         <Section title="Silver Rate Today (Chennai)" icon={<Gem className="text-slate-500" />}>
           <div className="grid grid-cols-2 gap-4">
             <SilverChangeCard type="gram" data={data.silverData.todayGram} />
@@ -304,25 +304,25 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
   };
 
   const LegalPage: React.FC<{ pageNumber: number }> = ({ pageNumber }) => (
-    <Page title="Legal Information & Data Sources" pageNumber={pageNumber} date={data.date}>
+    <Page title="Legal Information & Data Sources ☕" pageNumber={pageNumber} date={data.date}>
       <div className="space-y-4">
         <Section title="Privacy" icon={<span className="text-3xl" role="img" aria-label="lock icon">🔐</span>}>
-          <p className="text-xl text-slate-800 leading-relaxed">
+          <p className="text-2xl text-slate-800 leading-relaxed">
             We value your privacy. Your personal details such as name, email, or phone number will never be shared without your explicit consent. All data is securely stored and used only to deliver the stock market updates you've subscribed to.
           </p>
         </Section>
         <Section title="Disclaimer" icon={<span className="text-3xl" role="img" aria-label="warning icon">⚠️</span>}>
-          <p className="text-xl text-slate-800 leading-relaxed">
-            The Stonkzz Daily Report is for informational purposes only and should not be treated as financial advice or investment recommendations. While we aim for accuracy, market data may change or include occasional errors. Always do your own research or consult a financial advisor before making decisions. We do not take responsibility for any financial outcomes.
+          <p className="text-2xl text-slate-800 leading-relaxed">
+            The Fincup Daily Report is for informational purposes only and should not be treated as financial advice or investment recommendations. While we aim for accuracy, market data may change or include occasional errors. Always do your own research or consult a financial advisor before making decisions. We do not take responsibility for any financial outcomes.
           </p>
         </Section>
         <Section title="Terms & Conditions" icon={<span className="text-3xl" role="img" aria-label="document icon">📄</span>}>
-          <p className="text-xl text-slate-800 leading-relaxed">
-            By subscribing to Stonkzz, you agree to use the report for personal use only. Sharing, reselling, or redistributing is not permitted. Reports are usually delivered daily, but occasional delays may occur. A 3-day cancellation window is available after purchase. Terms may be updated anytime, and continued usage indicates your acceptance.
+          <p className="text-2xl text-slate-800 leading-relaxed">
+            By subscribing to Fincup, you agree to use the report for personal use only. Sharing, reselling, or redistributing is not permitted. Reports are usually delivered daily, but occasional delays may occur. A 3-day cancellation window is available after purchase. Terms may be updated anytime, and continued usage indicates your acceptance.
           </p>
         </Section>
         <Section title="Source" icon={<span className="text-3xl" role="img" aria-label="brain icon">🧠</span>}>
-          <p className="text-xl text-slate-800 leading-relaxed">
+          <p className="text-2xl text-slate-800 leading-relaxed">
             Market data is gathered from publicly available platforms like NSE, BSE, Moneycontrol, Investing.com, Trendlyne, and Sensibull. We do not conduct independent research or promote specific investments.
           </p>
         </Section>
@@ -332,7 +332,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
 
   const allPages = [
     // Page 1: Nifty Glance, Nifty Tech
-    <Page key="page-1" title="Stonkzz" pageNumber={1} date={data.date}>
+    <Page key="page-1" title="Fincup ☕" pageNumber={1} date={data.date}>
       {data.niftyDashboardData && (
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-3">
@@ -357,19 +357,15 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
       )}
 
       <Section title="Nifty Technical Analysis" icon={<BarChart2 className="text-brand-black" />}>
-        {data.niftyTechAnalysis && typeof data.niftyTechAnalysis.trendScore === 'number' && (
-          <div className="mb-6 flex justify-center">
-            <TrendGauge score={data.niftyTechAnalysis.trendScore} />
-          </div>
-        )}
+
         <img src="https://raw.githubusercontent.com/Prasannapriyan/Generator/refs/heads/main/Data/nifty_chart.png" alt="Nifty Chart" className="w-full rounded-lg border-2 border-brand-black mb-4" />
         <div className="space-y-4 text-brand-black">
           {data.niftyTechAnalysis && (
             <>
-              <div className="space-y-2 text-base">
+              <div className="space-y-4 text-lg">
                 {data.niftyTechAnalysis.analysis.map((point, i) => (
-                  <p key={i} className="flex items-start gap-2">
-                    <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
+                  <p key={i} className="flex items-start gap-3">
+                    <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
                     <span><HighlightKeywords text={point} /></span>
                   </p>
                 ))}
@@ -405,7 +401,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // Page 2: MMI, Gainers/Losers
-    <Page key="page-2" title="Stonkzz" pageNumber={2} date={data.date}>
+    <Page key="page-2" title="Fincup ☕" pageNumber={2} date={data.date}>
       <div className="flex flex-col gap-6">
         <div className="border-2 border-brand-black rounded-lg p-3 bg-white/30">
           <h2 className="text-2xl font-bold font-heading text-center">Market Mood Index</h2>
@@ -453,7 +449,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
                 <div className="text-center">
                   <div className="text-xs text-slate-500 font-semibold"> % Change</div>
                   <div className={`text-2xl font-bold font-mono ${data.marketMood.niftyChange.value >= 0 ? 'text-brand-green' : 'text-brand-red'}`}>
-                    {data.marketMood.niftyChange.value > 0 ? '+' : ''}{data.marketMood.niftyChange.percentage}
+                    {data.marketMood.niftyChange.percentage}
                   </div>
                 </div>
               </div>
@@ -464,9 +460,9 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
           <h3 className="text-xl font-bold font-heading mb-3">Analysis:</h3>
           <div className="space-y-3">
             {data.marketMood.analysis.map((point, index) => (
-              <div key={index} className="flex items-start gap-3">
-                <ChevronsRight className="text-slate-500 mt-1 flex-shrink-0" size={20} />
-                <p className="text-base text-slate-800 leading-relaxed"><HighlightKeywords text={point} /></p>
+              <div key={index} className="flex items-start gap-4 mb-2">
+                <ChevronsRight className="text-slate-500 mt-1 flex-shrink-0" size={24} />
+                <p className="text-xl text-slate-800 leading-relaxed"><HighlightKeywords text={point} /></p>
               </div>
             ))}
           </div>
@@ -495,26 +491,9 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // Page 3: Nifty OI/PCR
-    <Page key="page-3" title="Stonkzz" pageNumber={3} date={data.date}>
+    <Page key="page-3" title="Fincup ☕" pageNumber={3} date={data.date}>
       <Section title="Nifty Open Interest Analysis" icon={<Target className="text-brand-black" />}>
-        {data.realTimeOiData?.summary?.timestamp && (
-          <div className={`mb-3 px-3 py-2 rounded-md border text-sm font-semibold flex items-center gap-2 ${data.realTimeOiData.summary.timestamp.includes('Synthetic')
-            ? 'bg-amber-100 border-amber-400 text-amber-800'
-            : 'bg-emerald-100 border-emerald-400 text-emerald-800'
-            }`}>
-            {data.realTimeOiData.summary.timestamp.includes('Synthetic') ? (
-              <>
-                <Shield size={16} className="text-amber-600" />
-                <span>⚠️ Using Estimated Data (Live Sources Unavailable)</span>
-              </>
-            ) : (
-              <>
-                <CheckCircle2 size={16} className="text-emerald-600" />
-                <span>✅ Live Market Data Active ({data.realTimeOiData.summary.timestamp})</span>
-              </>
-            )}
-          </div>
-        )}
+
         {data.realTimeOiData && data.realTimeOiData.oi_chart_data ? (
           <div className="h-64 w-full mb-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -542,18 +521,18 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
           />
         )}
 
-        <div className="mt-4 space-y-3 text-sm text-brand-black leading-relaxed">
+        <div className="mt-4 space-y-3 text-lg text-brand-black leading-relaxed">
           {data.realTimeOiData && data.realTimeOiData.analysis_points && data.realTimeOiData.analysis_points.length > 0 ? (
             data.realTimeOiData.analysis_points.map((point, i) => (
-              <p key={i} className="flex items-start gap-2">
-                <span className="text-xl font-bold text-brand-red leading-none mt-0">»</span>
-                <span>{point}</span>
+              <p key={i} className="flex items-start gap-3 mb-2">
+                <span className="text-2xl font-bold text-brand-red leading-none mt-0">»</span>
+                <span><HighlightKeywords text={point} /></span>
               </p>
             ))
           ) : (
             data.niftyOiAnalysis.summary.map((item, i) => (
-              <p key={i} className="flex items-start gap-2">
-                <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
+              <p key={i} className="flex items-start gap-3 mb-2">
+                <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
                 <span><HighlightKeywords text={item} /></span>
               </p>
             ))
@@ -583,29 +562,28 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
           />
         )}
 
-        <div className="mt-4 space-y-2 text-base text-brand-black">
+        <div className="mt-4 space-y-3 text-lg text-brand-black">
           {data.realTimeOiData ? (
             <>
-              <p className="flex items-start gap-2">
-                <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
+              <p className="flex items-start gap-3">
+                <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
                 <span>
                   Current PCR is <strong>{data.realTimeOiData.summary.pcr}</strong> with Total Put OI at <strong>{data.realTimeOiData.summary.put_oi.toLocaleString()}</strong> and Total Call OI at <strong>{data.realTimeOiData.summary.call_oi.toLocaleString()}</strong>.
                 </span>
               </p>
               {/* Check if we have analysis points specific to PCR in realTimeOiData, otherwise show generic message */}
-              <p className="italic text-sm text-slate-600">Real-time trend available above. Refer to OI Analysis section for detailed sentiment.</p>
             </>
           ) : (
             data.niftyPcrAnalysis && (
               <>
-                <p className="flex items-start gap-2">
-                  <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
+                <p className="flex items-start gap-3">
+                  <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
                   <span>
                     Current PCR is <strong>{data.niftyPcrAnalysis.rawData.pcr}</strong> with Total Put OI at <strong>{data.niftyPcrAnalysis.rawData.putOi}</strong> and Total Call OI at <strong>{data.niftyPcrAnalysis.rawData.callOi}</strong>.
                   </span>
                 </p>
-                <p className="flex items-start gap-2">
-                  <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
+                <p className="flex items-start gap-3">
+                  <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
                   <span><HighlightKeywords text={data.niftyPcrAnalysis.summary} /></span>
                 </p>
               </>
@@ -615,7 +593,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // Page 4: Heatmap
-    <Page key="page-4" title="Stonkzz" pageNumber={4} date={data.date}>
+    <Page key="page-4" title="Fincup ☕" pageNumber={4} date={data.date}>
       <div className="flex flex-col h-full">
         <div className="flex items-center gap-3 mb-3">
           <BarChart2 className="text-brand-black" />
@@ -637,9 +615,9 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
             <Section title="Heatmap Analysis" icon={<List className="text-brand-black" />}>
               <ul className="space-y-3">
                 {data.heatmapAnalysis.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <li key={i} className="flex items-start gap-3 mb-2">
                     <ChevronsRight className="text-slate-500 mt-1 flex-shrink-0" size={20} />
-                    <span className="text-brand-black text-base"><HighlightKeywords text={item} /></span>
+                    <span className="text-brand-black text-lg"><HighlightKeywords text={item} /></span>
                   </li>
                 ))}
               </ul>
@@ -650,13 +628,13 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // Page 5: Market Bulletin, Key Stocks
-    <Page key="page-5" title="Stonkzz" pageNumber={5} date={data.date}>
+    <Page key="page-5" title="Fincup ☕" pageNumber={5} date={data.date}>
       <Section title="Market Bulletin" icon={<List className="text-brand-black" />}>
-        <ul className="space-y-3">
+        <ul className="space-y-4">
           {data.marketBulletin.slice(0, 4).map((item, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <CheckCircle2 className="text-brand-green mt-1 flex-shrink-0" size={20} />
-              <span className="text-brand-black">
+            <li key={i} className="flex items-start gap-4">
+              <CheckCircle2 className="text-brand-green mt-1 flex-shrink-0" size={24} />
+              <span className="text-brand-black text-xl leading-relaxed">
                 {item.length > 85 ? item.substring(0, 85) + '...' : item}
               </span>
             </li>
@@ -697,7 +675,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // Page 6: FII/DII
-    <Page key="page-6" title="Stonkzz" pageNumber={6} date={data.date}>
+    <Page key="page-6" title="Fincup ☕" pageNumber={6} date={data.date}>
       <Section title="" icon={<Briefcase className="text-brand-black" />}>
         {/* Title handled inside component */}
         <FiiDiiActivity data={data.fiiDiiActivity} />
@@ -706,7 +684,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // NEW Page 7 (was page 10): VIX, 52W High/Low
-    <Page key="page-7" title="Stonkzz" pageNumber={7} date={data.date}>
+    <Page key="page-7" title="Fincup ☕" pageNumber={7} date={data.date}>
       <Section title="India VIX Analysis" icon={<BarChart2 />}>
         {data.vixAnalysis && (
           <>
@@ -719,16 +697,16 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
                 className="w-full rounded-lg border-2 border-brand-black"
               />
             )}
-            <div className="mt-4 space-y-2 text-base text-brand-black">
-              <p className="flex items-start gap-2">
-                <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
+            <div className="mt-6 space-y-4 text-lg text-brand-black">
+              <p className="flex items-start gap-3">
+                <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
                 <span>
                   Current VIX is <strong>{data.vixAnalysis.rawData.value}</strong>, with a change of <strong>{data.vixAnalysis.rawData.change}</strong>.
                 </span>
               </p>
-              <p className="flex items-start gap-2">
-                <ChevronsRight size={16} className="mt-1 text-slate-500 flex-shrink-0" />
-                <span><HighlightKeywords text={data.vixAnalysis.summary} /></span>
+              <p className="flex items-start gap-3">
+                <ChevronsRight size={20} className="mt-1 text-slate-500 flex-shrink-0" />
+                <span className="leading-relaxed"><HighlightKeywords text={data.vixAnalysis.summary} /></span>
               </p>
             </div>
           </>
@@ -755,7 +733,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     </Page>,
 
     // NEW Page 8 (was page 7): Global, Currency
-    <Page key="page-8" title="Stonkzz" pageNumber={8} date={data.date}>
+    <Page key="page-8" title="Fincup ☕" pageNumber={8} date={data.date}>
       <Section title="Key Global Indices" icon={<Briefcase className="text-brand-black" />}>
         <InfoTable
           headers={['Name', 'LTP', 'Change', 'Change %']}
@@ -834,7 +812,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
     <SilverPage key="page-10" pageNumber={10} />,
 
     // Page 11: Terms and Conditions
-    <Page key="page-11" title="Terms & Conditions" pageNumber={11} date={data.date}>
+    <Page key="page-11" title="Terms & Conditions ☕" pageNumber={11} date={data.date}>
       <div className="flex flex-col gap-6">
         <div className="border-2 border-brand-black rounded-lg p-6 bg-white/50">
           <div className="flex items-center gap-3 mb-6">
@@ -844,11 +822,11 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
 
           <div className="space-y-4 text-brand-black font-medium leading-relaxed">
             <p>
-              <strong>1. Educational Purpose Only:</strong> The content provided in this report, generated by Stonkzz, is strictly for educational and informational purposes. It does not constitute financial, investment, or trading advice.
+              <strong>1. Educational Purpose Only:</strong> The content provided in this report, generated by Fincup, is strictly for educational and informational purposes. It does not constitute financial, investment, or trading advice.
             </p>
 
             <p>
-              <strong>2. No Recommendation:</strong> None of the information contained here is a recommendation to buy, sell, or hold any security, financial product, or instrument. Stonkzz and its creators are not SEBI registered research analysts or advisors.
+              <strong>2. No Recommendation:</strong> None of the information contained here is a recommendation to buy, sell, or hold any security, financial product, or instrument. Fincup and its creators are not SEBI registered research analysts or advisors.
             </p>
 
             <p>
@@ -856,11 +834,11 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
             </p>
 
             <p>
-              <strong>4. Data Accuracy:</strong> While we strive to provide accurate and up-to-date data, Stonkzz relies on third-party sources and algorithms which may differ from real-time market data. We do not guarantee the completeness or accuracy of the information.
+              <strong>4. Data Accuracy:</strong> While we strive to provide accurate and up-to-date data, Fincup relies on third-party sources and algorithms which may differ from real-time market data. We do not guarantee the completeness or accuracy of the information.
             </p>
 
             <p>
-              <strong>5. Liability:</strong> Stonkzz, its developers, and affiliates shall not be held liable for any direct, indirect, or consequential damages resulting from the use of this report.
+              <strong>5. Liability:</strong> Fincup, its developers, and affiliates shall not be held liable for any direct, indirect, or consequential damages resulting from the use of this report.
             </p>
           </div>
         </div>
@@ -872,7 +850,7 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <img src="https://raw.githubusercontent.com/Prasannapriyan/Generator/refs/heads/main/logo.png" alt="Stonkzz Logo" className="h-24 opacity-80 grayscale hover:grayscale-0 transition-all" />
+          <img src="/fincup_logo.png" alt="Fincup Logo" className="h-24 transition-all" />
         </div>
       </div>
     </Page>,

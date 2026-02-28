@@ -37,20 +37,25 @@ In your analysis, highlight the most important keywords (like specific strike pr
 Return your response as a JSON object with a single key "summary" which is an array of 3 strings. The strings in the array should contain the markdown for bolding. For example: {"summary": ["Point 1 with a **highlighted** word.", "Point 2", "Point 3"]}`;
 
     // 3. Call the Groq API (Text Only) with Error Handling.
-    try {
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
-
-        const completion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
+    // Try primary key first, then backup key, then static fallback.
+    const tryGroqWithKey1 = async (apiKey: string) => {
+        const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
+        return groq.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
             model: "llama-3.3-70b-versatile",
             temperature: 0.5,
             response_format: { type: "json_object" }
         });
+    };
+
+    try {
+        let completion;
+        try {
+            completion = await tryGroqWithKey1(process.env.GROQ_API_KEY!);
+        } catch (primaryError) {
+            console.warn("Groq primary key failed for NiftyOI, trying backup key...", primaryError);
+            completion = await tryGroqWithKey1(process.env.GROQ_API_KEY_BACKUP!);
+        }
 
         const jsonStr = completion.choices[0]?.message?.content || "";
 
@@ -60,7 +65,7 @@ Return your response as a JSON object with a single key "summary" which is an ar
             return parsed.summary;
         }
     } catch (e) {
-        console.warn("Groq API failed (Rate Limit or other), failing back to static analysis.", e);
+        console.warn("Both Groq API keys failed for NiftyOI, using static fallback.", e);
         // Fallback: Generate simple stat-based summary from raw text
         const summary: string[] = [];
         const lines = rawText.split('\n');
@@ -130,20 +135,25 @@ Return your response as a JSON object with a single key "analysis" which is an a
 Example: {"analysis": ["Nifty is showing signs of **consolidation** near the **25,500** level.", "The price is holding above support, suggesting underlying **bullish** momentum."]}`;
 
     // 4. Call Groq with Error Handling
-    try {
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
-
-        const completion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
+    // Try primary key first, then backup key, then static fallback.
+    const tryGroqWithKey2 = async (apiKey: string) => {
+        const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
+        return groq.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
             model: "llama-3.3-70b-versatile",
             temperature: 0.5,
             response_format: { type: "json_object" }
         });
+    };
+
+    try {
+        let completion;
+        try {
+            completion = await tryGroqWithKey2(process.env.GROQ_API_KEY!);
+        } catch (primaryError) {
+            console.warn("Groq primary key failed for NiftyTech, trying backup key...", primaryError);
+            completion = await tryGroqWithKey2(process.env.GROQ_API_KEY_BACKUP!);
+        }
 
         const jsonStr = completion.choices[0]?.message?.content || "";
 
@@ -158,7 +168,7 @@ Example: {"analysis": ["Nifty is showing signs of **consolidation** near the **2
             };
         }
     } catch (e) {
-        console.warn("Groq API failed for Tech Analysis, using fallback.", e);
+        console.warn("Both Groq API keys failed for NiftyTech, using static fallback.", e);
         // Fallback
         return {
             analysis: [

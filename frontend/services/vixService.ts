@@ -52,19 +52,24 @@ Highlight the most important keywords (like the VIX value, 'low volatility', 'hi
 Example: "The India VIX closed at **13.92**, indicating relatively **low volatility**, suggesting increasing market confidence."`;
 
     // 3. Call the Groq API with Error Handling
-    try {
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY, dangerouslyAllowBrowser: true });
-
-        const completion = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
+    // Try primary key first, then backup key, then static fallback.
+    const tryGroqWithKey = async (apiKey: string) => {
+        const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
+        return groq.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
             model: "llama-3.3-70b-versatile",
             temperature: 0.5,
         });
+    };
+
+    try {
+        let completion;
+        try {
+            completion = await tryGroqWithKey(process.env.GROQ_API_KEY!);
+        } catch (primaryError) {
+            console.warn("Groq primary key failed for VIX, trying backup key...", primaryError);
+            completion = await tryGroqWithKey(process.env.GROQ_API_KEY_BACKUP!);
+        }
 
         // 4. Parse and return the structured response
         const summary = completion.choices[0]?.message?.content || "";
@@ -76,7 +81,7 @@ Example: "The India VIX closed at **13.92**, indicating relatively **low volatil
             };
         }
     } catch (e) {
-        console.warn("Groq API failed for VIX (Rate Limit?), using fallback.", e);
+        console.warn("Both Groq API keys failed for VIX, using static fallback.", e);
         // Fallback
         const trend = parseFloat(change.replace(/[^\d.-]/g, '')) >= 0 ? "increased" : "decreased";
         const valNum = parseFloat(value);
