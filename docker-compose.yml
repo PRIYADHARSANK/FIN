@@ -1,0 +1,27 @@
+# ==============================================================
+#  Fincup ☕️ — Docker Compose
+#  Usage: docker compose up --build
+# ==============================================================
+
+services:
+  fincup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fincup-app
+    ports:
+      - "5173:5173"
+    env_file:
+      - backend/.env
+    volumes:
+      # Persist generated PDF reports on host
+      - ./generated_reports:/app/generated_reports
+      # Persist fetched market data
+      - ./frontend/public/Data:/app/frontend/public/Data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5173/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 3
