@@ -236,36 +236,32 @@ class PDFReportGenerator:
                 page.goto(self.url, wait_until="domcontentloaded", timeout=30000)
                 
                 # Wait for the loading to complete
-                print("⏳ Waiting for data to load...")
+                # The "Save PDF" button is disabled while data is loading (disabled={isLoading || !reportData})
+                # We must wait for it to become enabled before clicking, not just sleep a fixed time.
+                print("⏳ Waiting for data to load (up to 120 seconds)...")
                 try:
-                    # Wait for loading spinner to disappear (max 60 seconds)
-                    # Adjust selector based on actual loading indicator in frontend
-                    # Using a generic approach: waiting for a known element to exist or loading to vanish
-                    time.sleep(5) # Initial wait
-                    
-                    # Try to wait for the date element which usually appears after load
-                    # page.wait_for_selector('.date-display', timeout=60000) 
-                    print("✅ Assuming data loaded successfully after wait")
+                    # Wait until the "Save PDF" button is present and enabled (not disabled)
+                    page.wait_for_selector('button:has-text("Save PDF"):not([disabled])', timeout=120000)
+                    print("✅ Data loaded, Save PDF button is ready")
+                    time.sleep(2)  # Extra wait for all charts and images to finish rendering
                 except PlaywrightTimeout:
-                    print("⚠️  Loading timeout - proceeding anyway")
-                
-                # Additional wait for rendering
-                time.sleep(3)
+                    print("⚠️  Timeout waiting for page to load - proceeding anyway")
+                    time.sleep(3)  # Fallback wait
                 
                 # Click the "Save as PDF" button
-                print("🖱️  Clicking 'Save as PDF' button...")
+                print("🖱️  Clicking 'Save PDF' button...")
                 try:
-                    # Find and click the Save as PDF button
-                    # Look for button that contains "Save" or "PDF"
-                    pdf_button = page.locator('button:has-text("Save"), button:has-text("PDF")')
+                    # Find and click the Save PDF button (exact text match)
+                    pdf_button = page.locator('button:has-text("Save PDF")')
                     if pdf_button.count() > 0:
                          pdf_button = pdf_button.first
                          pdf_button.wait_for(state='visible', timeout=10000)
                          
                          # Set up download listener before clicking
-                         with page.expect_download(timeout=120000) as download_info:
+                         # Increase timeout to 5 minutes to handle multi-page PDF generation
+                         with page.expect_download(timeout=300000) as download_info:
                              pdf_button.click()
-                             print("⏳ Waiting for PDF generation...")
+                             print("⏳ Waiting for PDF generation (multi-page, may take a few minutes)...")
                          
                          download = download_info.value
                          
