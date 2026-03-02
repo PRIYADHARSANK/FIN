@@ -2,10 +2,10 @@ name: Daily Fincup Report
 
 on:
   schedule:
-    # Adjusted to 00:15 UTC (5:45 AM IST same day)
-    # Target: 5:45 AM IST (00:15 UTC same day)
+    # Adjusted to 23:50 UTC (5:20 AM IST next day)
+    # Target: 5:20 AM IST (23:50 UTC previous day)
     # Runs Monday to Friday only (weekdays in IST)
-    - cron: "15 0 * * 1-5"
+    - cron: "50 23 * * 0-4"
   workflow_dispatch:
     # Allow manual trigger for testing
 
@@ -26,7 +26,7 @@ jobs:
           echo "========================================="
           echo "UTC Time: $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
           echo "IST Time: $(TZ='Asia/Kolkata' date '+%Y-%m-%d %H:%M:%S %Z')"
-          echo "Scheduled for: 05:45 AM IST (Monday-Friday)"
+          echo "Scheduled for: 05:20 AM IST (Monday-Friday)"
           echo "========================================="
 
       # 3. Setup Python 3.11
