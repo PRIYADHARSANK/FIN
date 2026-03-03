@@ -1842,19 +1842,19 @@ def fetch_fiidii():
                 json.dump(final_list, f, indent=2)
         except: pass
         
-        # Rolling Summaries
+        # Filter daily_data to only current month
         today = datetime.now()
-        from datetime import timedelta
-        cutoff_date = today - timedelta(days=45)
+        start_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         current_daily_data = [
-            d for d in final_list 
-            if datetime.strptime(d['date'], '%d-%m-%Y') >= cutoff_date
+            d for d in final_list
+            if datetime.strptime(d['date'], '%d-%m-%Y') >= start_of_month
         ]
-        
-        summ_7_fii = sum(d['fii'] for d in current_daily_data[:7])
-        summ_7_dii = sum(d['dii'] for d in current_daily_data[:7])
-        summ_10_fii = sum(d['fii'] for d in current_daily_data[:10])
-        summ_10_dii = sum(d['dii'] for d in current_daily_data[:10])
+
+        # Rolling summaries use the most recent N trading days regardless of month boundary
+        summ_7_fii = sum(d['fii'] for d in final_list[:7])
+        summ_7_dii = sum(d['dii'] for d in final_list[:7])
+        summ_10_fii = sum(d['fii'] for d in final_list[:10])
+        summ_10_dii = sum(d['dii'] for d in final_list[:10])
         
         final_struct = {
             "daily_data": current_daily_data,
