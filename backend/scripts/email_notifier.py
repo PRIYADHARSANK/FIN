@@ -20,7 +20,11 @@ class EmailNotifier:
         """Initialize email notifier with environment variables"""
         self.sender_email = os.getenv("EMAIL_SENDER", "")
         self.app_password = os.getenv("EMAIL_APP_PASSWORD", "")
-        self.recipients = self._parse_recipients(os.getenv("EMAIL_RECIPIENTS", ""))
+        self.excluded_recipients = self._parse_recipients(os.getenv("EMAIL_EXCLUDED_RECIPIENTS", ""))
+        self.recipients = [
+            r for r in self._parse_recipients(os.getenv("EMAIL_RECIPIENTS", ""))
+            if r not in self.excluded_recipients
+        ]
         self.enabled = os.getenv("EMAIL_ENABLED", "true").lower() == "true"
         
     def _parse_recipients(self, recipients_str: str) -> List[str]:

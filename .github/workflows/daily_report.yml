@@ -70,6 +70,7 @@ jobs:
           echo "EMAIL_SENDER=${{ secrets.EMAIL_SENDER }}" >> backend/.env
           echo "EMAIL_APP_PASSWORD=${{ secrets.EMAIL_APP_PASSWORD }}" >> backend/.env
           echo "EMAIL_RECIPIENTS=${{ secrets.EMAIL_RECIPIENTS }}" >> backend/.env
+          echo "EMAIL_EXCLUDED_RECIPIENTS=${{ secrets.EMAIL_EXCLUDED_RECIPIENTS }}" >> backend/.env
           echo "EMAIL_ENABLED=true" >> backend/.env
 
       # 9. Fetch Market Data
