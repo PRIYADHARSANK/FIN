@@ -3,6 +3,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from datetime import datetime
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:
+    from backports.zoneinfo import ZoneInfo
 import os
 from typing import List, Optional
 
@@ -108,7 +112,8 @@ class EmailNotifier:
     
     def _generate_default_body(self, has_attachment: bool = False) -> str:
         """Generate default email body"""
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S IST')
+        ist = ZoneInfo("Asia/Kolkata")
+        timestamp = datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S IST')
         
         attachment_note = ""
         if has_attachment:
