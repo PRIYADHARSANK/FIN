@@ -33,8 +33,11 @@ logger = logging.getLogger(__name__)
 class RobustStockFetcher:
     def __init__(self):
         self.max_retries = 3
-        # Cache setup
-        self.cache_dir = os.path.join(os.getcwd(), 'public', 'Data')
+        # Cache setup — always resolve relative to this script's location so the
+        # cache lands in frontend/public/Data/ regardless of the working directory.
+        # Go up two levels (backend/scripts/ → backend/ → project root), then into frontend/public/Data.
+        _script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.cache_dir = os.path.abspath(os.path.join(_script_dir, '..', '..', 'frontend', 'public', 'Data'))
         os.makedirs(self.cache_dir, exist_ok=True)
         self.cache_file = os.path.join(self.cache_dir, 'stock_cache.json')
         self._load_cache()

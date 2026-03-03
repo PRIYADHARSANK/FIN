@@ -343,7 +343,7 @@ def main():
     print("="*60)
     print(f"UTC Time: {now_utc.strftime('%Y-%m-%d %H:%M:%S %Z')}")
     print(f"IST Time: {now_ist.strftime('%Y-%m-%d %H:%M:%S %Z')}")
-    print(f"Target Schedule: 7:00 AM IST (Weekdays)")
+    print(f"Target Schedule: 5:20 AM IST (Weekdays)")
     print("="*60 + "\n")
     
     parser = argparse.ArgumentParser(description='Automated PDF Report Generator')

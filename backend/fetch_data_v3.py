@@ -336,9 +336,6 @@ class NSEOptionChainFetcher:
             if not resp or resp.status_code != 200:
                 print(f"Groww: Failed with Status {resp.status_code if resp else 'None'}")
                 return None
-            if resp.status_code != 200:
-                print(f"Groww: Failed with Status {resp.status_code}")
-                return None
                 
             soup = BeautifulSoup(resp.content, 'html.parser')
             next_data = soup.find('script', id='__NEXT_DATA__')
@@ -419,8 +416,6 @@ class NSEOptionChainFetcher:
         except Exception as e:
             print(f"Groww: Request Error: {e}")
 
-        return None
-            
         return None
 
     def _fetch_from_moneycontrol(self):
@@ -592,10 +587,11 @@ def fetch_indices():
         mmi_val = 50.0 + (pct * 10) # Simple proxy: if up 1%, mmi 60. if down 1%, mmi 40.
         mmi_val = max(0, min(100, mmi_val))
         
-        # BUG FIX #2: Use correct MMI interpretation
-        mmi_analysis_text = interpret_mmi(mmi_val, mmi_val - (1.0 if chg > 0 else -1.0)) # Simulate prev change
+        # Simulate previous MMI based on market direction
+        mmi_prev = mmi_val - (1.0 if chg > 0 else -1.0)
+        mmi_analysis_text = interpret_mmi(mmi_val, mmi_prev)
         
-        mmi_text = f"Current MMI = {mmi_val:.1f}\nChange in MMI from {mmi_val-1.0:.1f}\nChange in Nifty = {chg:+.2f} ({pct:+.2f}%)\n"
+        mmi_text = f"Current MMI = {mmi_val:.1f}\nChange in MMI from {mmi_prev:.1f}\nChange in Nifty = {chg:+.2f} ({pct:+.2f}%)\n"
         mmi_text += f"Zone Analysis: {mmi_analysis_text}"
         save_file('mmi.txt', mmi_text)
         
@@ -1091,7 +1087,6 @@ class NiftyOIAnalyzer:
                     })
                 
                 strikes.sort(key=lambda x: x['strike'])
-                strikes.sort(key=lambda x: x['strike'])
                 pcr = self.calculate_pcr_correct(total_ce_oi, total_pe_oi)
                 
                 return {
@@ -1316,17 +1311,18 @@ class NiftyOIAnalyzer:
         # 2b. Determine Price Trend (Read nifty.txt if available)
         price_trend = "consolidation"
         try:
-            if os.path.exists("nifty.txt"):
-                with open("nifty.txt", "r") as f:
+            nifty_path = os.path.join(DATA_DIR, 'nifty.txt')
+            if os.path.exists(nifty_path):
+                with open(nifty_path, "r") as f:
                     content = f.read()
-                    # e.g. "25700.00\n-120.50"
-                    parts = content.split('\n')
-                    if len(parts) > 1:
-                        change = float(parts[1])
-                        if change < -50: price_trend = "significant fall"
-                        elif change > 50: price_trend = "significant rise"
-                        elif change < -10: price_trend = "mild correction"
-                        elif change > 10: price_trend = "mild recovery"
+                    # Parse "Change: ₹+55.70 (+0.22%)" line (sign is optional)
+                    change_match = re.search(r'Change:\s*₹([+-]?[\d,.]+)', content)
+                    if change_match:
+                        chg_val = float(change_match.group(1).replace(',', ''))
+                        if chg_val < -50: price_trend = "significant fall"
+                        elif chg_val > 50: price_trend = "significant rise"
+                        elif chg_val < -10: price_trend = "mild correction"
+                        elif chg_val > 10: price_trend = "mild recovery"
         except:
             pass
 
@@ -1874,7 +1870,7 @@ def fetch_fiidii():
         # Text file
         if current_daily_data:
             latest = current_daily_data[0]
-            save_file('fii_dii_data.txt', f"Date: {latest['date']} : FII = {latest['fii']} DII = {latest['dii']}\\n")
+            save_file('fii_dii_data.txt', f"Date: {latest['date']} : FII = {latest['fii']} DII = {latest['dii']}\n")
             
         print(f"FII/DII Update Complete. Latest: {current_daily_data[0]['date'] if current_daily_data else 'None'}")
         
