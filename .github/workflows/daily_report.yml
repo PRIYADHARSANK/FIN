@@ -2,10 +2,10 @@ name: Daily Fincup Report
 
 on:
   schedule:
-    # Adjusted to 00:15 UTC (5:45 AM IST same day)
-    # Target: 5:45 AM IST (00:15 UTC same day)
-    # Runs Monday to Friday only (weekdays in IST)
-    - cron: "15 0 * * 1-5"
+    # Target: 5:20 AM IST (Mon-Fri)
+    # IST = UTC + 5:30, so 5:20 AM IST = 23:50 UTC the previous day
+    # Cron runs Sun-Thu at 23:50 UTC  =  Mon-Fri at 5:20 AM IST
+    - cron: "50 23 * * 0-4"
   workflow_dispatch:
     # Allow manual trigger for testing
 
@@ -26,7 +26,7 @@ jobs:
           echo "========================================="
           echo "UTC Time: $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
           echo "IST Time: $(TZ='Asia/Kolkata' date '+%Y-%m-%d %H:%M:%S %Z')"
-          echo "Scheduled for: 05:45 AM IST (Monday-Friday)"
+          echo "Scheduled for: 05:20 AM IST (Monday-Friday)"
           echo "========================================="
 
       # 3. Setup Python 3.11
@@ -79,12 +79,40 @@ jobs:
           python fetch_data_v3.py
         continue-on-error: true # Continue even if some data sources fail
 
-      # 10. Generate PDF Report and Send Email
+      # 10. Validate that fresh data was written today
+      - name: Validate Fresh Data
+        run: |
+          echo "========================================="
+          echo "Validating freshness of fetched data..."
+          echo "========================================="
+          MAX_AGE_SECONDS=1800
+          REPORT_DATE_FILE="frontend/public/Data/report_date.txt"
+          if [ ! -f "$REPORT_DATE_FILE" ]; then
+            echo "❌ ERROR: report_date.txt not found. Data fetch likely failed entirely."
+            exit 1
+          fi
+          REPORT_DATE=$(cat "$REPORT_DATE_FILE")
+          echo "Report date written by fetch: $REPORT_DATE"
+          # Check how recently the file was modified (must be within the last 30 minutes)
+          FILE_MOD=$(stat -c %Y "$REPORT_DATE_FILE")
+          NOW=$(date +%s)
+          FILE_AGE=$(( NOW - FILE_MOD ))
+          echo "File age in seconds: $FILE_AGE"
+          if [ "$FILE_AGE" -gt "$MAX_AGE_SECONDS" ]; then
+            echo "❌ ERROR: report_date.txt is $FILE_AGE seconds old (>30 min). Data fetch did NOT update it."
+            echo "   This means fetch_data_v3.py failed and we would send a STALE PDF."
+            echo "   The stale report date is: $REPORT_DATE"
+            exit 1
+          fi
+          echo "✅ Data is fresh (updated $FILE_AGE seconds ago). Proceeding with PDF generation."
+          echo "========================================="
+
+      # 11. Generate PDF Report and Send Email
       - name: Generate PDF and Send Email
         run: |
           python generate_pdf_report.py
 
-      # 11. Upload PDF as Artifact (Safety Net)
+      # 12. Upload PDF as Artifact (Safety Net)
       - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
         if: always() # Upload even if previous steps fail
