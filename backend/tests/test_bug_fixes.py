@@ -108,5 +108,80 @@ class TestReportFixes(unittest.TestCase):
         msg = interpret_mmi(25.0, 35.0) # Delta -10
         self.assertIn("declined to", msg)
 
+class TestFiiDiiMonthFilter(unittest.TestCase):
+    """Tests for the FII/DII current-month filter logic in fetch_fiidii()."""
+
+    def _apply_month_filter(self, data, run_date):
+        """Helper: replicate the month filter logic from fetch_fiidii()."""
+        start_of_month = run_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        return [
+            d for d in data
+            if datetime.strptime(d['date'], '%d-%m-%Y') >= start_of_month
+        ]
+
+    def _make_entry(self, date_str):
+        return {'date': date_str, 'fii': 100.0, 'dii': 200.0}
+
+    def test_previous_month_entries_excluded_at_month_start(self):
+        """When we're in March, February entries must not appear in daily_data."""
+        data = [
+            self._make_entry('27-02-2026'),
+            self._make_entry('26-02-2026'),
+            self._make_entry('25-02-2026'),
+        ]
+        run_date = datetime(2026, 3, 1, 9, 0, 0)  # First day of March
+        result = self._apply_month_filter(data, run_date)
+        self.assertEqual(result, [], "February entries should be excluded when running in March")
+
+    def test_current_month_entries_included(self):
+        """Entries from the current month must appear in daily_data."""
+        data = [
+            self._make_entry('04-03-2026'),
+            self._make_entry('03-03-2026'),
+            self._make_entry('27-02-2026'),  # Previous month
+        ]
+        run_date = datetime(2026, 3, 4, 15, 0, 0)
+        result = self._apply_month_filter(data, run_date)
+        dates = [d['date'] for d in result]
+        self.assertIn('04-03-2026', dates)
+        self.assertIn('03-03-2026', dates)
+        self.assertNotIn('27-02-2026', dates, "February entry must not be included in March")
+
+    def test_month_boundary_first_day_included(self):
+        """An entry dated the 1st of the current month must be included."""
+        data = [self._make_entry('01-03-2026')]
+        run_date = datetime(2026, 3, 1, 0, 0, 0)
+        result = self._apply_month_filter(data, run_date)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['date'], '01-03-2026')
+
+    def test_only_previous_month_data_yields_empty_daily_data(self):
+        """If the cache has only previous month data, daily_data must be empty
+        (not populated with previous month entries)."""
+        data = [
+            self._make_entry('28-02-2026'),
+            self._make_entry('27-02-2026'),
+            self._make_entry('26-02-2026'),
+        ]
+        run_date = datetime(2026, 3, 4, 10, 0, 0)
+        result = self._apply_month_filter(data, run_date)
+        self.assertEqual(result, [],
+                         "When cache only has previous month data, daily_data should be empty")
+
+    def test_filter_works_across_year_boundary(self):
+        """Month filter must work correctly at a year boundary (December → January)."""
+        data = [
+            self._make_entry('01-01-2027'),
+            self._make_entry('31-12-2026'),
+            self._make_entry('30-12-2026'),
+        ]
+        run_date = datetime(2027, 1, 5, 10, 0, 0)
+        result = self._apply_month_filter(data, run_date)
+        dates = [d['date'] for d in result]
+        self.assertIn('01-01-2027', dates)
+        self.assertNotIn('31-12-2026', dates)
+        self.assertNotIn('30-12-2026', dates)
+
+
 if __name__ == '__main__':
     unittest.main()

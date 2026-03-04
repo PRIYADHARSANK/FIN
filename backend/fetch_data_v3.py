@@ -1790,81 +1790,87 @@ def fetch_fiidii():
     Fetches FII/DII Data
     Source: Web scraping from groww.in/fii-dii-data.
     Method: Uses the requests library with a standard user-agent header. It parses the HTML table using BeautifulSoup to extract the date, FII net value, and DII net value. It scrapes up to 4 pages of historical data.
-    Fallback: None explicitly implemented within the function if the scraping fails.
+    Fallback: Uses cached data when scraping fails, always filtering to current month only.
     """
     print("Fetching FII/DII Daily Data (via Groww Scraping)...")
     
     all_daily_data = []
     
+    # --- SCRAPING (failures here do not prevent saving filtered cache data) ---
     try:
         from bs4 import BeautifulSoup
         import requests
-        from datetime import datetime
         
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
         
         for page in range(0, 4):
-            # Groww pagination (even if URL structure ignores it currently, we fulfill the requirement)
-            url = f"https://groww.in/fii-dii-data?page={page}"
-            
-            resp = requests.get(url, headers=headers, timeout=15)
-            
-            if resp.status_code == 200:
-                soup = BeautifulSoup(resp.text, 'html.parser')
-                tables = soup.find_all('table')
+            try:
+                # Groww pagination (even if URL structure ignores it currently, we fulfill the requirement)
+                url = f"https://groww.in/fii-dii-data?page={page}"
                 
-                if tables:
-                    table = tables[0]
-                    rows = table.find_all('tr')
+                resp = requests.get(url, headers=headers, timeout=15)
+                
+                if resp.status_code == 200:
+                    soup = BeautifulSoup(resp.text, 'html.parser')
+                    tables = soup.find_all('table')
                     
-                    # The table has 2 header rows, data starts from index 2
-                    for row in rows[2:]:
-                        cols = row.find_all('td')
-                        if len(cols) >= 7:
-                            date_str = cols[0].text.strip()
-                            try:
-                                # Example: "24 Feb 2026"
-                                dt = datetime.strptime(date_str, '%d %b %Y')
-                                formatted_date = dt.strftime('%d-%m-%Y')
-                                
-                                # Index 3 is FII Net (Buy/Sell)
-                                fii_net_str = cols[3].text.strip().replace(',', '').replace('+', '')
-                                fii_net = float(fii_net_str) if fii_net_str else 0.0
-                                
-                                # Index 6 is DII Net (Buy/Sell)
-                                dii_net_str = cols[6].text.strip().replace(',', '').replace('+', '')
-                                dii_net = float(dii_net_str) if dii_net_str else 0.0
-                                
-                                # Avoid duplicates
-                                existing = next((d for d in all_daily_data if d['date'] == formatted_date), None)
-                                if not existing:
-                                    all_daily_data.append({
-                                        'date': formatted_date,
-                                        'fii': fii_net,
-                                        'dii': dii_net,
-                                        'timestamp': dt.timestamp()
-                                    })
-                            except Exception as e:
-                                pass
-            else:
-                print(f"Failed to fetch page {page}. Status code: {resp.status_code}")
+                    if tables:
+                        table = tables[0]
+                        rows = table.find_all('tr')
+                        
+                        # The table has 2 header rows, data starts from index 2
+                        for row in rows[2:]:
+                            cols = row.find_all('td')
+                            if len(cols) >= 7:
+                                date_str = cols[0].text.strip()
+                                try:
+                                    # Example: "24 Feb 2026"
+                                    dt = datetime.strptime(date_str, '%d %b %Y')
+                                    formatted_date = dt.strftime('%d-%m-%Y')
+                                    
+                                    # Index 3 is FII Net (Buy/Sell)
+                                    fii_net_str = cols[3].text.strip().replace(',', '').replace('+', '')
+                                    fii_net = float(fii_net_str) if fii_net_str else 0.0
+                                    
+                                    # Index 6 is DII Net (Buy/Sell)
+                                    dii_net_str = cols[6].text.strip().replace(',', '').replace('+', '')
+                                    dii_net = float(dii_net_str) if dii_net_str else 0.0
+                                    
+                                    # Avoid duplicates
+                                    existing = next((d for d in all_daily_data if d['date'] == formatted_date), None)
+                                    if not existing:
+                                        all_daily_data.append({
+                                            'date': formatted_date,
+                                            'fii': fii_net,
+                                            'dii': dii_net,
+                                            'timestamp': dt.timestamp()
+                                        })
+                                except Exception:
+                                    pass  # Skip rows with unparseable dates/values
+                else:
+                    print(f"Failed to fetch page {page}. Status code: {resp.status_code}")
+            except Exception as e:
+                print(f"  Warning: Failed to fetch FII/DII page {page}: {e}")
                 
         if all_daily_data:
             print(f"  Parsed {len(all_daily_data)} unique rows from Groww")
         else:
-            print("  Warning: No FII/DII data parsed.")
+            print("  Warning: No FII/DII data parsed from Groww.")
             
-        # No fallback explicitly implemented as per requirements.
-        
-        # --- MERGE WITH CACHE (Required for history and frontend format) ---
+    except Exception as e:
+        print(f"  Warning: FII/DII scraping failed: {e}")
+
+    # --- MERGE WITH CACHE, FILTER TO CURRENT MONTH, AND SAVE ---
+    # This block always runs regardless of scraping success, ensuring that
+    # when a new month starts the Period data is cleared to current month only.
+    try:
         cache_file = os.path.join(DATA_DIR, 'fii_dii_cache.json')
         cached_data = []
         if os.path.exists(cache_file):
             try:
                 with open(cache_file, 'r') as f:
-                    import json
                     cached_data = json.load(f)
             except: pass
             
@@ -1877,14 +1883,14 @@ def fetch_fiidii():
         final_list = list(merged.values())
         final_list.sort(key=lambda x: datetime.strptime(x['date'], '%d-%m-%Y').timestamp(), reverse=True)
         
-        # Save Cache
+        # Save Cache (retains full history for rolling summaries)
         try:
             with open(cache_file, 'w') as f:
-                import json
                 json.dump(final_list, f, indent=2)
         except: pass
         
-        # Filter daily_data to only current month
+        # Filter daily_data to only the current month so that when a new month
+        # starts, previous month entries are never shown in the Period column.
         today = datetime.now()
         start_of_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         current_daily_data = [
@@ -1906,7 +1912,6 @@ def fetch_fiidii():
             }
         }
         
-        import json
         save_file('fii_dii_data.json', json.dumps(final_struct, indent=2))
         
         # Text file
@@ -1917,7 +1922,7 @@ def fetch_fiidii():
         print(f"FII/DII Update Complete. Latest: {current_daily_data[0]['date'] if current_daily_data else 'None'}")
         
     except Exception as e:
-        print(f"Error fetching FII/DII: {e}")
+        print(f"Error saving FII/DII: {e}")
         import traceback
         traceback.print_exc()
 
