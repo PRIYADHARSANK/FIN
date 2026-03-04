@@ -541,13 +541,13 @@ const Report: React.FC<ReportProps> = ({ data, pageToShow }) => {
       </Section>
 
       <Section title="NIFTY50 PCR Data" icon={<Target className="text-brand-black" />}>
-        {data.realTimeOiData && data.realTimeOiData.pcr_trend_data && data.realTimeOiData.pcr_trend_data.length > 0 ? (
-          <div className="h-64 w-full mb-4">
+        {data.realTimeOiData && data.realTimeOiData.pcr_trend_data && data.realTimeOiData.pcr_trend_data.length > 1 ? (
+          <div className="w-full mb-4" style={{ height: '256px', width: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.realTimeOiData.pcr_trend_data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="time" tick={{ fontSize: 10 }} />
-                <YAxis domain={[0.5, 1.5]} tick={{ fontSize: 10 }} label={{ value: 'PCR', angle: -90, position: 'insideLeft' }} />
+                <XAxis dataKey="time" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
+                <YAxis domain={['auto', 'auto']} tick={{ fontSize: 10 }} label={{ value: 'PCR', angle: -90, position: 'insideLeft' }} />
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="pcr" stroke="#8884d8" strokeWidth={2} dot={true} name="PCR Trend" />
