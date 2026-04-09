@@ -1,4 +1,4 @@
-Current MMI = 37.5
-Change in MMI from 36.5
-Change in Nifty = -317.90 (-1.25%)
-Zone Analysis: Market sentiment is in Fear zone 😰 (MMI: 37.53) (remains in Fear with slight decline)
+Current MMI = 87.5
+Change in MMI from 86.5
+Change in Nifty = +867.40 (+3.75%)
+Zone Analysis: Market sentiment is in Extreme Greed zone 🤑 (MMI: 87.50) (remains in Extreme Greed with slight improvement)

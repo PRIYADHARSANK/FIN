@@ -236,10 +236,10 @@ class PDFReportGenerator:
                 page.goto(self.url, wait_until="domcontentloaded", timeout=30000)
                 
                 # Wait for the loading to complete
-                # The "Save PDF" button is disabled while data is loading (disabled={isLoading || !reportData})
-                # We must wait for it to become enabled before clicking, not just sleep a fixed time.
                 print("⏳ Waiting for data to load (up to 120 seconds)...")
                 try:
+                    time.sleep(5) # Initial wait
+                    
                     # Wait until the "Save PDF" button is present and enabled (not disabled)
                     page.wait_for_selector('button:has-text("Save PDF"):not([disabled])', timeout=120000)
                     print("✅ Data loaded, Save PDF button is ready")
@@ -248,7 +248,7 @@ class PDFReportGenerator:
                     print("⚠️  Timeout waiting for page to load - proceeding anyway")
                     time.sleep(3)  # Fallback wait
                 
-                # Click the "Save as PDF" button
+                # Click the "Save PDF" button
                 print("🖱️  Clicking 'Save PDF' button...")
                 try:
                     # Find and click the Save PDF button (exact text match)
@@ -257,7 +257,6 @@ class PDFReportGenerator:
                          pdf_button = pdf_button.first
                          pdf_button.wait_for(state='visible', timeout=10000)
                          
-                         # Set up download listener before clicking
                          # Increase timeout to 5 minutes to handle multi-page PDF generation
                          with page.expect_download(timeout=300000) as download_info:
                              pdf_button.click()
@@ -386,7 +385,7 @@ def main():
         print(f"📊 File Size: {os.path.getsize(pdf_path) / 1024:.2f} KB")
         print("="*60 + "\n")
         
-        # Now send email with attachment
+        # Send email with PDF attachment
         try:
             # Import dynamically to ensure sys.path is set
             from scripts.email_notifier import send_email_with_attachment

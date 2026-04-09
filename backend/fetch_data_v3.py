@@ -522,35 +522,73 @@ def fetch_indices():
     try:
         # Fetch Nifty using YFinance (^NSEI)
         nifty = yf.Ticker("^NSEI")
-        hist = nifty.history(period="1y") # Need history for 52W H/L
         
-        if hist.empty:
-           raise Exception("Empty Nifty Data")
-           
-        last = hist.iloc[-1]
-        cls = last['Close']
-        open_price = last['Open']
-        high = last['High']
-        low = last['Low']
-        
-        # Change
-        if len(hist) > 1:
-            prev = hist.iloc[-2]['Close']
-            chg = cls - prev
-            pct = (chg / prev) * 100
-        else:
-            prev = cls
-            chg = 0.0
-            pct = 0.0
+        # PRIMARY: Use fast_info for real-time/latest data
+        # history() has a 1-2 day lag and shows stale data
+        use_fast_info = False
+        try:
+            fi = nifty.fast_info
+            cls = fi['last_price']
+            prev = fi['previous_close']
+            open_price = fi['open']
+            high = fi['day_high']
+            low = fi['day_low']
             
-        # 52 Week High/Low
-        w52_high = hist['High'].max()
-        w52_low = hist['Low'].min()
+            if cls > 0 and prev > 0:
+                chg = cls - prev
+                pct = (chg / prev) * 100
+                use_fast_info = True
+                print(f"  fast_info: price={cls:.2f}, prev_close={prev:.2f}")
+            else:
+                print("  fast_info returned zero values, falling back to history()...")
+        except Exception as fi_err:
+            print(f"  fast_info failed ({fi_err}), falling back to history()...")
         
-        # Volume (YF index volume can be 0, but let's try)
-        vol = int(last['Volume'])
+        # FALLBACK: Use history() if fast_info didn't work
+        # (also always fetch history for 52-week range)
+        hist = nifty.history(period="1y")
         
-        # Fallback for Volume if 0
+        if not use_fast_info:
+            if hist.empty:
+                raise Exception("Empty Nifty Data from both fast_info and history()")
+            
+            last = hist.iloc[-1]
+            cls = last['Close']
+            open_price = last['Open']
+            high = last['High']
+            low = last['Low']
+            
+            if len(hist) > 1:
+                prev = hist.iloc[-2]['Close']
+                chg = cls - prev
+                pct = (chg / prev) * 100
+            else:
+                prev = cls
+                chg = 0.0
+                pct = 0.0
+            print(f"  Using history() fallback: price={cls:.2f} (may be 1-2 days behind)")
+            
+        # 52 Week High/Low (always from history, merged with live data)
+        if not hist.empty:
+            w52_high = max(hist['High'].max(), high)
+            w52_low = min(hist['Low'].min(), low)
+        else:
+            # Use fast_info year_high/year_low as fallback
+            try:
+                w52_high = fi.get('year_high', high)
+                w52_low = fi.get('year_low', low)
+            except:
+                w52_high = high
+                w52_low = low
+        
+        # Volume: fast_info returns 0 for indices, so use history or aggregate
+        vol = 0
+        if use_fast_info:
+            vol = int(fi.get('last_volume', 0) or 0)
+        if vol == 0 and not hist.empty:
+            vol = int(hist.iloc[-1]['Volume'])
+        
+        # Fallback for Volume if still 0
         if vol == 0:
             print("Index Volume is 0. Calculating aggregate volume from constituents...")
             try:
@@ -595,7 +633,7 @@ def fetch_indices():
         mmi_text += f"Zone Analysis: {mmi_analysis_text}"
         save_file('mmi.txt', mmi_text)
         
-        print(f"Fetched Nifty via YFinance: {cls}")
+        print(f"Fetched Nifty via YFinance: {cls} (source: {'fast_info' if use_fast_info else 'history'})")
             
     except Exception as e:
         print(f"Error fetching Indices via YFinance: {e}")
